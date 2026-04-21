@@ -13,7 +13,7 @@ def has_branch(fname, branch):
     if not t:
         return False
 
-    return t.GetBranch(branch) is not None
+    return t.GetBranchStatus(branch)
 
 
 def gaussFit(h,name,Run,output_dir, xmin=-1, xmax=-1):
@@ -276,48 +276,42 @@ def main(arguments):
 
         chain = ROOT.TChain("tree")
 
-        chain.Add(f"run_{run}/{run}_*_reco.root")
+        pattern = os.path.join(input_dir, f"run_{run}/{run}_*_reco.root") 
+
+        for f in glob.glob(pattern): 
+            if has_branch(f, "ecal_charge_sum_5x5"): 
+                chain.Add(f)
+            else:
+                print("Skipping:", f) 
 
         print(f"Run {run}: added {chain.GetNtrees()} files")
 
-       # charge_np = df.AsNumpy(["ecal_charge_sum_5x5"])["ecal_charge_sum_5x5"]
-#        chain.SetBranchStatus("*", 0)
-#        chain.SetBranchStatus("ecal_charge_sum_5x5", 1)
-        #charge_np = np.array(charge_np, dtype=np.float64)
-        #weights = np.ones(len(charge_np), dtype=np.float64)
 
         h = ROOT.TH1F(f"Charge_5x5_{run}", "", 1000, 0, 50000)
-        h2=ROOT.TH2F("h2","",500,0,50000,500,0,50000)
-        #h = ROOT.TH1F(f"Charge_5x5_{run}", "", 250, 0, 50000)
-        #h.FillN(len(charge_np), charge_np, weights)
+        h2=ROOT.TH2F(f"Peak_vs_Charge_seed_{run}","",500,0,50000,500,0,50000)
 
-#        tree=file["tree"]
-#        charge=tree["ecal_charge_sum_5x5"].array(library="np")
+        chain.Draw(f"ecal_charge_sum_5x5>>Charge_5x5_{run}", "", "goff")
 
-#        charge_np = np.array(charge, dtype=np.float64)
-#        charge_np = np.ascontiguousarray(charge_np)
-#        weights = np.ones(len(charge_np), dtype=np.float64)
+        chain.Draw(f"ecal_peak[ecal_seed_ch]:ecal_charge_seed>>Peak_vs_Charge_seed_{run}", "", "goff")
 
-#        h = ROOT.TH1F(f"Charge_5x5_{run}", "", 250, 0, 50000)
-#        h.FillN(len(charge_np), charge_np, weights)
+        h.Draw()
 
+        h2.Draw()
 
-        chain.Draw(f"ecal_charge_sum_5x5>>Charge_5x5_{run}")
-        chain.Draw(f"ecal_peak[ecal_seed_ch]:ecal_charge_seed>>h2")
-
-
-        MinMax=np.zeros(2).astype(float)
+        MinMaxX=np.zeros(2).astype(float)
 
         Rgx=np.array([0.08,0.99],float)
-        h2.ProjectionX().GetQuantiles(2,MinMax,Rgx)
+        h2.ProjectionX().GetQuantiles(2,MinMaxX,Rgx)
 
-        xmin,xmax = MinMax
+        xmin,xmax = MinMaxX
         Rgy=np.array([0.08,0.99],float)
-        h2.ProjectionX().GetQuantiles(2,MinMax,Rgy)
 
-        ymin,ymax = MinMax
+        MinMaxY=np.zeros(2).astype(float)
+        h2.ProjectionY().GetQuantiles(2,MinMaxY,Rgy)
 
+        ymin,ymax = MinMaxY
 
+        print("ranges (x, y)", xmin,xmax, ymin,ymax)
         h2.GetXaxis().SetRangeUser(xmin, xmax)
         h2.GetYaxis().SetRangeUser(ymin, ymax)
         h2.SetStats(0)
@@ -354,12 +348,11 @@ def main(arguments):
         pave.Draw()
         fit.Draw("same")
 
-        if run == 19293:
-            filename_h2 = f"PeakvsChargeFit_{run}"
-            output_path_h2 = os.path.join(plot_output_dir, filename_h2)
-            c.SaveAs(output_path_h2 + ".pdf")
-            c.SaveAs(output_path_h2 + ".root")
-            c.Clear()
+        filename_h2 = f"PeakvsChargeFit_{run}"
+        output_path_h2 = os.path.join(plot_output_dir, filename_h2)
+        c.SaveAs(output_path_h2 + ".pdf")
+        c.SaveAs(output_path_h2 + ".root")
+        c.Clear()
 
 
         h.GetXaxis().SetTitle("Charge [ADC]")
@@ -377,22 +370,22 @@ def main(arguments):
         bin2 = h.FindLastBinAbove(max_value/2)
         fwhm = h.GetBinCenter(bin2) - h.GetBinCenter(bin1)
 
-        xmin = max_position - 3*fwhm
-        xmax = max_position + 2*fwhm
+        min = max_position - 3*fwhm
+        max = max_position + 2*fwhm
 
         if fit_type=="gauss":
-            results = gaussFit(h,h.GetName(),run,fit_output_dir,xmin,xmax)
+            results = gaussFit(h,h.GetName(),run,fit_output_dir,min,max)
         if fit_type=="dcb":
-            results = cbFit(h,h.GetName(),run,fit_output_dir,xmin,xmax)
+            results = cbFit(h,h.GetName(),run,fit_output_dir,min,max)
         if fit_type=="logn":
-            results = lognFit(h,h.GetName(),run,fit_output_dir,xmin,xmax)
+            results = lognFit(h,h.GetName(),run,fit_output_dir,min,max)
 
         roofit_objects.append(results)
 
         mu_val, emu_val = results["mean"]
         sig_val, esig_val = results["sigma"]
 
-        resolution_error = sqrt((esig_val/mu_val)**2+emu_val**2*(sig_val/mu_val**2)**2)
+        resolution_error = sqrt((esig_val/mu_val)**2+emu_val**2*(sig_val/mu_val**2)**2+5e-4**2)
         quotient_error = sqrt(((emu_val*(energy+55.5))/(mu_val)**2)**2+(3.25/mu_val)**2+(energy*0.05/mu_val)**2)
 
         print("Energy/Mean/eMean/Sigma/eSigma")
@@ -412,32 +405,6 @@ def main(arguments):
 
     canvas = ROOT.TCanvas()
     canvas.SetGrid()
-
-#    charge=tree["ecal_charge_seed"].array(library="np")
-#    seedchannel=tree["ecal_seed_ch"].array(library="np")
-#    peak=tree["ecal_peak"].array(library="np")
-#    peak_seed=np.take_along_axis(peak,seedchannel[:,None].astype(int),axis=1).squeeze()
-
-#    h2=ROOT.TH2F("h2","",500,0,50000,500,0,50000)
-
-#    xmin = h2.GetXaxis().GetXmin()
-#    xmax = h2.GetXaxis().GetXmax()
-#    ymin = h2.GetYaxis().GetXmin()
-#    ymax = h2.GetYaxis().GetXmax()
-
-#    h2.SetStats(0)
-
-#    charge_np = np.array(charge, dtype=np.float64)
-#    charge_np = np.ascontiguousarray(charge_np)
-#    weights = np.ones(len(charge_np), dtype=np.float64)
-
-
-#    h = ROOT.TH2F(f"Peak_vs_Charge_{run}", "", 500, 0, 50000,500,0,50000)
-#    h.FillN(len(charge_np), charge_np,peak_seed.astype(np.float64), weights)
-
-#    xmin, xmax = np.percentile(charge_np, [7, 99])
-#    ymin, ymax = np.percentile(peak_seed, [7, 100])
-
 
     lin.SetMarkerStyle(24)
     lin.SetMarkerSize(0.8)
