@@ -84,7 +84,7 @@ def main(arguments):
             reco_conf = copy.deepcopy(json_dict["default_reco_conf"])
             reco_conf.update(dd["reco_conf"])
             reco_dict[detector]["mask"], reco_dict[detector]["arrays"] = reco_functions.generic_reco(
-              waves, detector, id=chid_dict, geo_dict=geo_dict, **reco_conf #n_cpus=args.n_cpus: not implemented
+              waves.astype(np.float32), detector, id=chid_dict, geo_dict=geo_dict, **reco_conf #n_cpus=args.n_cpus: not implemented
             )
 
         elif detector == "hodo":

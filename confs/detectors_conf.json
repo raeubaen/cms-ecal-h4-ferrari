@@ -118,7 +118,7 @@
             "generic_reco": true,
             "remove_last_n_samples": 50,
             "reco_conf": {
-                "signal_samples_pre_peak": 12,
+                "signal_samples_pre_peak": 13,
                 "signal_samples_post_peak": 15,
                 "charge_zerosup_peak_threshold": 60,
                 "seed_charge_threshold": 0,
@@ -126,7 +126,7 @@
                 "do_timing": true,
                 "timing_method": "cf",
                 "sampling_rate": 5,
-                "rise_samples_pre_peak": 10,
+                "rise_samples_pre_peak": 12,
                 "rise_samples_post_peak": 2,
                 "cf": 0.2,
                 "interpolation_factor": 40
