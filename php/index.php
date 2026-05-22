@@ -1,16 +1,76 @@
 <?php
-$config = json_decode(file_get_contents("plots.json"), true);
 
-$rootfile = $config["rootfile"] ?? null;
-$plots    = $config["plots"] ?? [];
-$layout   = $config["layout"] ?? [];
+$csvFile = "plots.csv";
 
-if (!$rootfile || !file_exists($rootfile)) {
+/*
+plots.csv format:
+
+canvas_name_1
+canvas_name_2
+canvas_name_3
+
+(one canvas name per row)
+*/
+
+$plots = [];
+
+if (!file_exists($csvFile)) {
+
+    echo "<!doctype html>";
+    echo "<html><head>";
+    echo "<meta charset='utf-8'>";
+    echo "<title>Subfolders</title>";
+
+    echo "<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel='stylesheet'>";
+
+    echo "</head><body class='p-4'>";
+
+    echo "<h5 class='mt-4'>Available subfolders</h5>";
+
+    echo "<div class='list-group'>";
+
+    foreach (glob("./*", GLOB_ONLYDIR) as $dir) {
+
+        $name = basename($dir);
+
+        echo "<a class='list-group-item list-group-item-action' href='" .
+             htmlspecialchars($dir) .
+             "'>" .
+             htmlspecialchars($name) .
+             "</a>";
+    }
+
+    echo "</div>";
+
+    echo "</body></html>";
+
+    exit;
+}
+
+if (($handle = fopen($csvFile, "r")) !== false) {
+
+    while (($row = fgetcsv($handle)) !== false) {
+
+        if (!empty($row[0])) {
+            $plots[] = [
+                "name" => trim($row[0])
+            ];
+        }
+    }
+
+    fclose($handle);
+}
+
+$rootfile = "../histos.root";
+
+/* keep same defaults previously coming from JSON */
+$cardW = 400;
+$plotH = 300;
+
+if (!file_exists($rootfile)) {
     die("ROOT file not found");
 }
 
-$cardW = $layout["card_width"] ?? 400;
-$plotH = $layout["plot_height"] ?? 300;
 ?>
 
 <!doctype html>
@@ -112,8 +172,9 @@ async function main() {
 
         console.log("PLOT ENTRY:", p);
 
-console.log("fileName:", fileName);
-console.log("id:", id);
+        console.log("fileName:", fileName);
+        console.log("id:", id);
+
         card.innerHTML = `
             <div class="card-body p-1">
 
@@ -144,7 +205,9 @@ console.log("id:", id);
 
             let opt = "";
             console.log(opt);
+
             const painter = await draw(id, obj, opt);
+
             window._painters = window._painters || {};
             window._painters[id] = painter;
 
@@ -162,6 +225,7 @@ const w = document.getElementById("w");
 const h = document.getElementById("h");
 
 function update() {
+
     const ww = w.value;
     const hh = h.value;
 
@@ -173,7 +237,6 @@ function update() {
 
 w.addEventListener("input", update);
 h.addEventListener("input", update);
-
 
 update();
 main();

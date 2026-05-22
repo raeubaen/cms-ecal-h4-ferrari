@@ -72,19 +72,28 @@ def draw_TT_grid(hist, c):
       line.SetLineWidth(line_width)
       line.Draw("same")
       lines.append(line)
-    return lines  
+    return lines
 
 
 
-def plot(row, uproot_dict, outputfolder, f=None, just_draw=False):
+def plot(row, uproot_dict, outputfolder, subfolders_list, f=None, just_draw=False, php_files=None):
 
+  t0 = time.time()
   try:
     os.makedirs(f"{outputfolder}/{row.folder}/", exist_ok=True)
 
-    if not os.path.exists(f"{outputfolder}/{row.folder}/index.php"):
-      shutil.copy2(f"{outputfolder}/index.php", f"{outputfolder}/{row.folder}/index.php")
+    if row.folder not in subfolders_list:
+      os.system(f"rm {outputfolder}/{row.folder}/*.csv")
+      if php_files is not None:
+        for php_f in php_files:
+          os.system(f"/bin/cp {outputfolder}/{php_f}.php {outputfolder}/{row.folder}/{php_f}.php")
+
+      subfolders_list.append(row.folder)
+
   except Exception:
     print(traceback.format_exc(), file=sys.stderr, flush=True)
+
+  #print(f"copying files etc. took: {time.time() - t0}s")
 
   ROOT.gErrorIgnoreLevel = ROOT.kError
 
@@ -96,11 +105,13 @@ def plot(row, uproot_dict, outputfolder, f=None, just_draw=False):
 
     print(name, file=sys.stderr, flush=True)
 
-    os.makedirs(f"{outputfolder}/{row.folder}/", exist_ok=True)
-
     ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
     c = ROOT.TCanvas(f"{name}_canvas")
+
+    with open(f"{outputfolder}/{row.folder}/plots.csv", "a") as plot_csv_for_php_file:
+      plot_csv_for_php_file.write(f"{c.GetName()}\n")
+
     c.cd()
 
     if just_draw:
@@ -139,7 +150,9 @@ def plot(row, uproot_dict, outputfolder, f=None, just_draw=False):
           h.FillN(len(x), x.astype(np.float64), weight.astype(np.float64))
           #print(f"fillN 1D took {time.time() - time_fill}", file=sys.stderr, flush=True)
 
+        t0 = time.time()
         h.Draw("HIST")
+        #print(f"drawing plots took: {time.time() - t0}s")
         h.SetFillColorAlpha(ROOT.kBlue, 0.2)
         h.SetLineColor(eval(f"ROOT.{row.color}"))
         binw = (float(row.binsmaxx) - float(row.binsminx)) / int(row.binsnx)
@@ -186,7 +199,10 @@ def plot(row, uproot_dict, outputfolder, f=None, just_draw=False):
           h.FillN(len(x), x.astype(np.float64), y.astype(np.float64), weight.astype(np.float64))
           #print(f"fillN 2D took {time.time() - time_fill}", file=sys.stderr, flush=True)
 
+        t0 = time.time()
         h.Draw("ZCOL")
+        #print(f"drawing plots took: {time.time() - t0}s")
+
         h.GetYaxis().SetTitle(row.ylabel)
 
     else:
@@ -212,8 +228,9 @@ def plot(row, uproot_dict, outputfolder, f=None, just_draw=False):
           #print(f"fillN 2D took {time.time() - time_fill}", file=sys.stderr, flush=True)
 
         h.Scale(1/h.GetEntries())
+        t0 = time.time()
         h.Draw("ZCOL")
-
+        #print(f"drawing plots took: {time.time() - t0}s")
         # 5x5 grid fot TTs
         if row.tt:
           lines = draw_TT_grid(h, c)
@@ -227,12 +244,14 @@ def plot(row, uproot_dict, outputfolder, f=None, just_draw=False):
 
     h.GetXaxis().SetTitle(row.xlabel)
 
+    t0 = time.time()
     f.cd()
     if just_draw: c.Write("", ROOT.TObject.kOverwrite)
     else:
       c.Write()
       if str(row.y).strip() != "0" and str(row.z).strip() != "0": h.Scale(h.GetEntries())
       h.Write()
+    #print(f"writing plots took: {time.time() - t0}s")
 
   except Exception:
     print(traceback.format_exc(), file=sys.stderr, flush=True)

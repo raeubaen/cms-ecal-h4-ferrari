@@ -11,5 +11,6 @@ Overview of the code:
     csv file with the list of the plots and the settings for each one
 
 for tests:
-run 19374
+
+python3 reco.py -i /eos/cms/store/group/dpg_ecal/comm_ecal/upgrade/testbeam/ECALTB_H4_Oct2025/DataTree/19435/0001.root -r 19435 -s 1 -ro /tmp/prova_ruben -opt electrons -po /eos/user/r/rgargiul/www/test_ferrari
 

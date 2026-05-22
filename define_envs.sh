@@ -7,5 +7,5 @@ RECO_FOLDER="${RECO_UNPACKED_OUTDIR}/re-reco"
 UNPACKED_FOLDER="${RECO_UNPACKED_OUTDIR}/DataTree"
 EBETE_DIR="/afs/cern.ch/user/e/ecalgit/EBeTe/"
 RAW_DIR="/eos/cms/store/group/dpg_ecal/comm_ecal/upgrade/testbeam/ECALTB_H4_Oct2025/EB/"
-
+LOGS_DIR="/eos/user/m/mcampana/www/h4dqm/ECAL_TB_2025/logs"
 WORKING_DIR="/afs/cern.ch/user/e/ecalgit/ECAL_TB2026_dev/"
