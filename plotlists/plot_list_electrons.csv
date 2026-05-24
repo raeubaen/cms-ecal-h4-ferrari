@@ -3,6 +3,14 @@ peak_vs_charge_seed,,ecal,${ecal_charge_seed},${ecal_peak_seed},0,,kBlack,1000,0
 #,,,,,,,,,,,,,,,,,,
 charge_sum_5x5,,main,${ecal_charge_sum_5x5},0,0,,kBlue,1000,0,10000,0,0,0,0,charge_{5x5} [ADC counts],ADC counts,, 
 #,,,,,,,,,,,,,,,,,,
+lsfitamp_sum_5x5,,ecal,"np.sum(${ecal_lsfit_amp}*(np.abs(${ecal_iphi_within_5x5})<3)*(np.abs(${ecal_ieta_within_5x5})<3), axis=1)",0,0,,kBlue,1000,0,10000,0,0,0,0,lsfitAmp_{5x5} [ADC counts],ADC counts,,
+#
+lsfitamp_sum_3x3,,ecal,"np.sum(${ecal_lsfit_amp}*(np.abs(${ecal_iphi_within_5x5})<2)*(np.abs(${ecal_ieta_within_5x5})<2), axis=1)",0,0,,kBlue,1000,0,10000,0,0,0,0,lsfitAmp_{3x3} [ADC counts],ADC counts,,
+#
+charge_sum_3x3,,ecal,"np.sum(${ecal_charge}*(np.abs(${ecal_iphi_within_5x5})<2)*(np.abs(${ecal_ieta_within_5x5})<2), axis=1)",0,0,,kBlue,1000,0,10000,0,0,0,0,charge_{3x3} [ADC counts],ADC counts,,
+#
+ecal_mcp_diff_clock_corr,,ecal,"np.fmod(np.take_along_axis(${ecal_lsfit_time}, ${ecal_seed_ch}[:, None].astype(np.int32), axis=1)[:, 0] - (${mcp_cf_time}[:, 1]+${mcp_cf_time}[:, 0])/2. + ${digi_bcp_clock_reading_fixed_thr_time}[:, 0], 6.25)",0,0,,kBlue,1250,0,6.25,0,0,0,0,Tdiff [ns],ns,,
+#
 highest_ch_peak,,main,"np.take_along_axis( ${ecal_peak}, ${ecal_highest_ch}[:, None].astype(np.int32), axis=1)",0,0,,kBlue,1000,0,10000,0,0,0,0,highest_ch_peak,ADC counts,, 
 #,,,,,,,,,,,,,,,,,,
 mean_charge,,ecal,${ecal_ieta},${ecal_iphi},${ecal_charge},,0,60,0.5,60.5,10,0.5,10.5,25,eta,phi,ADC counts,"_ = draw_TT_grid(h, c); c.SetLogz();"
@@ -10,13 +18,15 @@ mean_sample_max,,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak_pos},,0,60,0.5,60.5,
 mean_values,,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_mean},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = draw_TT_grid(h, c)"
 std_values,,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_std},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = draw_TT_grid(h, c)"
 mean_pedestals,,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_mean},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = draw_TT_grid(h, c)"
-mean_values_max,,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = draw_TT_grid(h, c)"
+mean_values_max,,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = draw_TT_grid(h, c); c.SetLogz();"
 std_pedestals,,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_std},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = draw_TT_grid(h, c)"
 baseline_integral,,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_integral},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = draw_TT_grid(h, c)"
 #,,,,,,,,,,,,,,,,,,
+centroid_charge_5x5_sum_weighted,,main,${ecal_ieta_centroid},${ecal_iphi_centroid},0,${ecal_charge_sum_5x5}>300,0,6000,0.5,60.5,1000,0.5,10.5,1000,eta,phi,5x5 charge,"_ = draw_TT_grid(h, c); c.SetLogz();"
+#,,,,,,,,,,,,,,,,,,
 centroid,,ecal,${ecal_ieta_centroid},${ecal_iphi_centroid},0, ${ecal_charge_sum_5x5}>600,0,6000,0.5,60.5,1000,0.5,10.5,1000,eta,phi,0,"_ = draw_TT_grid(h, c)"
 iphi_centroid,,main,${ecal_iphi_centroid},0,0,,kBlue,1000,0.5,10.5,0,0,0,0,phi_{centroid},crystals,, 
-ieta_centroid,,main,${ecal_ieta_centroid},0,0,,kBlue,1200,60,0.5,60.5,0,0,0,eta_{centroid},crystals,, 
+ieta_centroid,,main,${ecal_ieta_centroid},0,0,,kBlue,6000,0.5,60.5,0,0,0,0,eta_{centroid},crystals,, 
 #,,,,,,,,,,,,,,,,,,
 charge_pos0_left_top,,ecal_single_charges,${ecal_charge},0,0,(${ecal_ieta_within_5x5}==-1) & (${ecal_iphi_within_5x5}==1),kBlue,1000,0,10000,0,0,0,0,charge [ADC counts],ADC counts,, 
 charge_pos1_center_top,,ecal_single_charges,${ecal_charge},0,0,(${ecal_ieta_within_5x5}==0) & (${ecal_iphi_within_5x5}==1),kBlue,1000,0,10000,0,0,0,0,charge [ADC counts],ADC counts,, 

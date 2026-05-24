@@ -1,23 +1,26 @@
 {
     "global": {
+        "plugins": ["custom_recos.decode_ecal", "custom_recos.decode_mem", "custom_recos.hodo_reco", "custom_recos.bcp_reco"],
         "spill_type": {
             "electrons": {
                 "plot_list": "plotlists/plot_list_electrons.csv",
                 "tree_name": "h4",
                 "detector_list": ["ecal", "mcp", "hodo", "bcp", "digi_bcp_clock_reading"],
-                "save_time_rc": true,
+                "global_branches": ["time_rc"],
                 "option": null
             },
             "pions": {
                 "plot_list": "plotlists/plot_list_pions.csv",
                 "tree_name": "h4",
                 "detector_list": ["ecal", "digi_bcp_clock_reading", "scint_discr"],
+                "global_branches": ["time_rc"],
                 "option": null
             },
             "laser": {
                 "plot_list": "plotlists/plot_list_laser.csv",
                 "tree_name": "h4_laser",
                 "detector_list": ["ecal", "mem"],
+                "global_branches": ["time_rc"],
                 "option": {
                     "ecal": {
                         "reco_conf": {
@@ -28,52 +31,17 @@
             }
         }
     },
-    "default_reco_conf": {
-                "baseline_samples": 10,
-                "signal_samples_pre_peak": null,
-                "signal_samples_post_peak": null,
-                "charge_zerosup_peak_threshold": null,
-                "seed_charge_threshold": null,
-                "do_central_region": false,
-                "fixed_central_region": null,
-                "do_timing": false,
-                "sampling_rate": null,
-                "rise_samples_pre_peak": null,
-                "rise_samples_post_peak": null,
-                "rise_interp_left_samples": null,
-                "rise_interp_right_samples": null,
-                "timing_methods": null,
-                "timing_thr_tol": null,
-                "sampling_rate": null,
-                "spline_file": null,
-                "cf": null,
-                "timing_thr": null,
-                "interpolation_factor": null,
-                "baseline_subtract": true,
-                "raw_threshold_before_peak_finding": null,
-                "save_only_central_region_info": false,
-                "save_mean_rms_all_samples": false,
-                "do_tau": false,
-                "tau_descent_samples": null,
-                "charge_to_peak_conversion":false,
-                "charge_to_peak_slope": null,
-                "w0_centroid": null,
-                "coords_2d_list": null,
-                "coord_z": null,
-                "central_region_width": null,
-                "min_outer_over_seed_ratio": null
-    },
     "detectors": {
         "ecal": {
             "_comment": "null ch_map means all channels active, list is active chs, string is map filename",
             "ch_map": "maps/tb_map.csv",
             "chid_vars_list": ["n_bcp","tt","ch_in_tt","module"],
-            "decode": true,
+            "decode": "decode_ecal",
             "to_be_inverted": false,
             "waves_branch": "xtal_sample",
             "generic_reco": true,
             "remove_last_n_samples": 0,
-            "geo_needed": true,
+            "geo_needed": ["ieta", "iphi"],
             "apply_gain_ratios": true,
             "reco_conf": {
                 "signal_samples_pre_peak": 5,
@@ -83,6 +51,7 @@
                 "do_tau": true,
                 "tau_descent_samples": 3,
                 "do_central_region": true,
+                "coords_2d_list": ["ieta", "iphi"],
                 "do_timing": true,
                 "timing_methods": ["lsfit"],
                 "spline_file": "templates/template.txt",
@@ -93,8 +62,7 @@
                 "charge_to_peak_conversion": true,
                 "w0_centroid": 3.8,
                 "min_outer_over_seed_ratio": 0.2,
-                "central_region_width": 5,
-                "coords_2d_list": ["ieta", "iphi"]
+                "central_region_width": 5
             }
         },
 
@@ -102,26 +70,28 @@
             "_comment": "null ch_map means all channels active, list is active chs, string is map filename",
             "ch_map": "maps/tb_map.csv",
             "chid_vars_list": ["n_bcp","tt","ch_in_tt"],
-            "decode": true,
+            "decode": "decode_mem",
             "to_be_inverted": false,
             "waves_branch": "xtal_sample",
             "generic_reco": true,
-            "geo_needed": true,
+            "geo_needed": ["ieta", "iphi"],
             "remove_last_n_samples": 0,
             "apply_gain_ratios": false,
             "reco_conf": {
                 "signal_samples_pre_peak": 5,
                 "signal_samples_post_peak": 10,
                 "charge_zerosup_peak_threshold": 10,
+                "coords_2d_list": ["ieta", "iphi"],
                 "seed_charge_threshold": 50,
-                "sampling_rate": 0.08
+                "sampling_rate": 0.08,
+                "save_mean_rms_all_samples": true
             }
     	},
 
         "mcp": {
             "_comment": "null ch_map means all channels active, list is active chs, string is map filename",
             "ch_map": [1, 2],
-            "decode": false,
+            "decode": null,
             "to_be_inverted": true,
             "waves_branch": "dgtz_sample",
             "generic_reco": true,
@@ -135,9 +105,9 @@
                 "timing_methods": ["cf"],
                 "sampling_rate": 5,
                 "rise_samples_pre_peak": 12,
-                "rise_samples_post_peak": 2,
-                "rise_interp_left_samples": 5,
-                "rise_interp_right_samples": 5,
+                "rise_samples_post_peak": 4,
+                "rise_interp_left_samples": 3,
+                "rise_interp_right_samples": 3,
                 "cf": 0.2,
                 "interpolation_factor": 40
             }
@@ -145,7 +115,7 @@
         "digi_bcp_clock_reading": {
             "_comment": "null ch_map means all channels active, list is active chs, string is map filename",
             "ch_map": [0],
-            "decode": false,
+            "decode": null,
             "to_be_inverted": false,
             "waves_branch": "dgtz_sample",
             "generic_reco": true,
@@ -172,7 +142,7 @@
       	"scint_discr": {
             "_comment": "null ch_map means all channels active, list is active chs, string is map filename",
             "ch_map": [1],
-            "decode": false,
+            "decode": null,
             "to_be_inverted": true,
             "waves_branch": "dgtz_sample",
             "generic_reco": true,
@@ -200,6 +170,7 @@
             "_comment": "null ch_map means all channels active, list is active chs, string is map filename",
             "ch_map": null,
             "generic_reco": false,
+            "custom_reco": "hodo",
             "reco_conf": {
             }
         },
@@ -211,7 +182,7 @@
             "to_be_inverted": false,
             "waves_branch": "bcp_clk",
             "generic_reco": false,
-            "geo_needed": false,
+            "custom_reco": "bcp",
             "reco_conf": {
             }
         }

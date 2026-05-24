@@ -24,21 +24,17 @@ def get_rise_interp(rise_valid, valid, thr_valid, interpolation_factor, argmax_i
         axis=1
     )
 
-    rise_segment_3d = rise_segment[:, None, :]   # restore fake channel axis
-
     rise_interp = ndimage.zoom(
-        rise_segment_3d,
-        [1, 1, interpolation_factor],
+        rise_segment,
+        [1, interpolation_factor],
         order=3,
-        prefilter=False
     )
 
-    return prelim_pseudo_t, rise_interp[:, 0, :]  # remove dummy axis
+    return prelim_pseudo_t, rise_interp  # remove dummy axis
 
-def pseudo_t(rise_valid, valid, thresholds, sampling_rate, interpolation_factor, argmax_idx, rise_interp_left_samples, rise_interp_right_samples, rise_samples_pre_peak, thr_tol=None):
+def pseudo_t(rise_valid, valid, thr_valid, sampling_rate, interpolation_factor, argmax_idx, rise_interp_left_samples, rise_interp_right_samples, rise_samples_pre_peak, thr_tol=None):
 
     idx_valid = np.where(valid)
-    thr_valid  = thresholds[idx_valid]        # (N_valid,)
 
     prelim_pseudo_t, rise_interp = get_rise_interp(rise_valid, valid, thr_valid, interpolation_factor, argmax_idx, rise_interp_left_samples, rise_interp_right_samples, thr_tol=thr_tol)
 

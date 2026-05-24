@@ -1,6 +1,5 @@
 import time
 import numpy as np
-import awkward as ak
 import multiprocessing as mp
 
 import reco_utils
@@ -176,52 +175,6 @@ def generic_reco(waves, detector_name, **kwargs):
 
   return mask_selected_events, return_dict
 
-
-def hodo_reco(tree, detector_name):
-  det = detector_name
-  reco_dict = {}
-  coords_list = ["x1", "x2", "y1", "y2"]
-  branches = tree.arrays(
-    [f"{det}_{coord}_nclusters" for coord in coords_list] +
-    [f"{det}_{coord}_pos" for coord in coords_list],
-    library="ak"
-  )
-  mask_dict = np.ones(len(branches[f"{det}_{coords_list[0]}_nclusters"]), dtype=bool)
-  for coord in coords_list:
-    clus = branches[f"{det}_{coord}_nclusters"]
-    pos = branches[f"{det}_{coord}_pos"]
-    mask = (clus > 0)
-    pos_first_cluster = ak.to_numpy(ak.where(mask, ak.firsts(pos), -999))
-    mask_single_cluster = ak.to_numpy(clus == 1)
-
-    safe_clus = ak.where(clus > 0, clus, 1)
-    average_all_clusters = ak.to_numpy(
-        ak.where(clus > 0, ak.sum(pos, axis=1) / safe_clus, -999.0)
-    )
-
-    reco_dict.update({
-      f"{det}_{coord}_cl0_pos": pos_first_cluster,
-      f"{det}_{coord}_single_cl_flag": mask_single_cluster,
-      f"{det}_{coord}_avg_pos": average_all_clusters,
-    })
-
-  return mask_dict, reco_dict
-
-
-def bcp_reco(bcp_clk, detector_name):
-  det = detector_name
-  reco_dict = {}
-  mask = np.ones((bcp_clk.shape[0],), dtype=bool)
-  bcp_clk = bcp_clk.astype(np.int64)
-  bcp1_clk = bcp_clk[:, 0, :]
-  bcp2_clk = bcp_clk[:, 1, :]
-  bcp1_clk_mean = np.tile(np.mean(bcp1_clk, axis=0), (bcp1_clk.shape[0], 1))
-  bcp2_clk_mean = np.tile(np.mean(bcp2_clk, axis=0), (bcp2_clk.shape[0], 1))
-  reco_dict.update({f"{det}1_clk": bcp1_clk, f"{det}2_clk": bcp2_clk,
-    f"{det}1_clk_mean": bcp1_clk_mean.astype(int), f"{det}2_clk_mean": bcp2_clk_mean.astype(int)
-  })
-
-  return mask, reco_dict
 
 
 #not implemented

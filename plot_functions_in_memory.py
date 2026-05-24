@@ -103,7 +103,8 @@ def plot(row, uproot_dict, outputfolder, subfolders_list, f=None, just_draw=Fals
   try:
     name = row['name']
 
-    print(name, file=sys.stderr, flush=True)
+    print(name, file=sys.stdout, flush=True)
+    print("Drawing: ", name, file=sys.stderr, flush=True)
 
     ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
@@ -138,7 +139,7 @@ def plot(row, uproot_dict, outputfolder, subfolders_list, f=None, just_draw=Fals
       #print("evaluating x: ")
       x = eval_formula(row.x, uproot_dict)
       nevents = x.shape[0]
-      x = x.ravel()
+      x = np.nan_to_num(x.ravel(), nan=-9999999)
 
     if str(row.y).strip() == "0" and str(row.z).strip() == "0":
         if just_draw:
@@ -213,9 +214,9 @@ def plot(row, uproot_dict, outputfolder, subfolders_list, f=None, just_draw=Fals
           #print("evaluating y: ")
           y_notflat = eval_formula(row.y, uproot_dict)
           n_ch = y_notflat.shape[1]
-          y = y_notflat.ravel()
+          y = np.nan_to_num(y_notflat.ravel(), nan=-99999)
           #print("evaluating z: ")
-          z = eval_formula(row.z, uproot_dict).ravel()
+          z = np.nan_to_num(eval_formula(row.z, uproot_dict).ravel(), nan=-999999)
           h = ROOT.TH2D(name, row.title,
                             int(row.binsnx), float(row.binsminx), float(row.binsmaxx),
                             int(row.binsny), float(row.binsminy), float(row.binsmaxy))

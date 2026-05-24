@@ -1,4 +1,3 @@
-
 import os, json, uproot, argparse, sys, time, ROOT, copy
 import awkward as ak
 import numpy as np
@@ -7,6 +6,9 @@ import pandas as pd
 import plot_functions_in_memory as plot_functions
 import multiprocessing as mp
 import reco_utils
+import importlib
+from registry import get_reco
+from default_generic_reco_conf import default_generic_reco_conf
 
 def main(arguments):
     print("Entered reco.py")
@@ -32,6 +34,10 @@ def main(arguments):
     json_dict = json.load(open(args.detectors_conf_json, "r"))
     detectors_dict = json_dict["detectors"]
     mode = json_dict["global"]["spill_type"][args.option]
+
+    for p in json_dict["global"]["plugins"]:
+      importlib.import_module(p)
+
     opt = mode["option"]
     if opt is not None:
         for detector in opt:
@@ -68,8 +74,8 @@ def main(arguments):
           active_row_list = (map_df["type"] == detector).tolist()
           active_ch_list = (map_df["branch_ch"][map_df["type"] == detector]).tolist()
           chid_dict = {var: map_df[var].to_numpy()[active_row_list] for var in dd["chid_vars_list"]}
-          if dd["geo_needed"]:
-            geo_dict = {coord: map_df[coord].to_numpy()[active_row_list] for coord in ["ieta", "iphi"]}
+          if dd["geo_needed"] is not None:
+            geo_dict = {coord: map_df[coord].to_numpy()[active_row_list] for coord in dd["geo_needed"]}
           if dd["apply_gain_ratios"]:
             gain_list = map_df["high_over_low_gain_ratio"].to_numpy()[active_row_list]
         elif isinstance(dd["ch_map"], list):
@@ -77,32 +83,29 @@ def main(arguments):
 
         if dd["generic_reco"]:
             waves = tree[dd["waves_branch"]].array(library="np")[:, active_ch_list, :]
-            if dd["decode"]: waves, is_valid, gain_is_high = reco_utils.decode_ecal_waves(waves.astype(np.uint16), gain_list)
+            if dd["decode"] is not None: waves = get_reco(dd["decode"])(waves.astype(np.uint16), gain_list)
             if dd["remove_last_n_samples"] != 0: waves = waves[:, :, : -dd["remove_last_n_samples"]]
             if dd["to_be_inverted"]: waves = 4096 - waves #must be inverted if the signal are with negative rising slope
 
-            reco_conf = copy.deepcopy(json_dict["default_reco_conf"])
+            reco_conf = copy.deepcopy(default_generic_reco_conf)
             reco_conf.update(dd["reco_conf"])
             reco_dict[detector]["mask"], reco_dict[detector]["arrays"] = reco_functions.generic_reco(
               waves.astype(np.float32), detector, id=chid_dict, geo_dict=geo_dict, **reco_conf #n_cpus=args.n_cpus: not implemented
             )
 
-        elif detector == "hodo":
-            reco_dict[detector]["mask"], reco_dict[detector]["arrays"] = reco_functions.hodo_reco(tree, detector)
+        else:
+            reco_dict[detector]["mask"], reco_dict[detector]["arrays"] = get_reco(dd["custom_reco"])(tree, detector, dd)
             print(f"{detector}, selected: {reco_dict[detector]['mask'].sum()} events")
-        elif detector == "bcp":
-            bcp_clk = tree[dd["waves_branch"]].array(library="np")[:, active_ch_list, :]
-            reco_dict[detector]["mask"], reco_dict[detector]["arrays"] = reco_functions.bcp_reco(bcp_clk, detector)
-            print(f"{detector}, selected: {reco_dict[detector]['mask'].sum()} events")
+
         print(""f"{detector} reco took {-time_reco_det + time.time():.1f} s")
     print(f"reco took: {-time_reco + time.time():.1f} s")
 
     # time run controller
-    if mode["save_time_rc"]: time_rc = tree["time_rc"].array(library="np")
 
     # add event number
     n_events = np.arange(reco_dict[list(reco_dict.keys())[0]]["mask"].shape[0])
-    reco_dict["events"] = {"mask": np.ones((n_events.shape[0],), dtype=bool), "arrays": {"n_event": n_events}}
+    reco_dict["event_info"] = {"mask": np.ones((n_events.shape[0],), dtype=bool), "arrays": {"n_event": n_events}}
+    for b in mode["global_branches"]: reco_dict["event_info"]["arrays"].update({b: tree[b].array(library="np")})
 
     # merging
     time_merge = time.time()

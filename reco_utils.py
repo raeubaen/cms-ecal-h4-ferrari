@@ -1,20 +1,5 @@
 import numpy as np
 
-def decode_ecal_waves(waves, gain_list):
-    bit13_mask = 1 << 13 #validity bit
-    bit12_mask = 1 << 12 #gain bit
-    amp_mask   = 0x0FFF #amplitude mask
-    is_valid = (waves & bit13_mask) != 0
-    gain_is_high = (waves & bit12_mask) != 0
-    amplitudes = (waves & amp_mask).astype(np.float32)
-
-    gains = gain_list[None, :, None]
-
-    amplitudes *= np.where(gain_is_high, gains, 1)
-    #amplitudes[~is_valid] = 0
-    return amplitudes, is_valid, gain_is_high
-
-
 def split(waveforms, threshold=None, pre=5, post=10, baseline_samples=10):
 
     # Assume waveforms is shape (E, C, S)
