@@ -83,7 +83,7 @@ fi
 
 echo "Starting reconstruction..."
 
-python3 reco.py -i ${UNPACKED_FILE} \
+python3 -m ferrari_core.reco -i ${UNPACKED_FILE} \
     -r "$RUN" \
     -s "$SPILL" \
     -ro ${RECO_UNPACKED_OUTDIR}/reco/run_$RUN/ \
