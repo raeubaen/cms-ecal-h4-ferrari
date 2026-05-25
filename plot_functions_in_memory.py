@@ -3,6 +3,7 @@ import time, re, os, ROOT, sys
 import numpy as np
 import traceback
 import shutil
+from registry import get_routine
 
 #not implemented!!
 def plot_chunk(args):
@@ -40,40 +41,6 @@ def eval_formula(formula, data_dict):
     # Safe eval environment
     safe_globals = {"uproot_dict": data_dict, "np": np, "__builtins__": {}}
     return eval(expr, safe_globals)
-
-
-def draw_TT_grid(hist, c):
-    c.cd()
-    lines = []
-    line_color = ROOT.kBlack
-    line_style = 1
-    line_width = 1
-    x_min = hist.GetXaxis().GetXmin()
-    x_max = hist.GetXaxis().GetXmax()
-    y_min = hist.GetYaxis().GetXmin()
-    y_max = hist.GetYaxis().GetXmax()
-
-    # vertical grid lines
-    for i in range(1, 66, 5):
-      x = i - 0.5
-      line = ROOT.TLine(x, y_min, x, y_max)
-      line.SetLineColor(line_color)
-      line.SetLineStyle(line_style)
-      line.SetLineWidth(line_width)
-      line.Draw("same")
-      lines.append(line)
-
-    # horizontal grid lines
-    for j in range(1, 11, 5):
-      y = j - 0.5
-      line = ROOT.TLine(x_min, y, x_max, y)
-      line.SetLineColor(line_color)
-      line.SetLineStyle(line_style)
-      line.SetLineWidth(line_width)
-      line.Draw("same")
-      lines.append(line)
-    return lines
-
 
 
 def plot(row, uproot_dict, outputfolder, subfolders_list, f=None, just_draw=False, php_files=None):

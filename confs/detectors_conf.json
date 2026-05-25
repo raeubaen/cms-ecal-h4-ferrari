@@ -1,6 +1,6 @@
 {
     "global": {
-        "plugins": ["custom_recos.decode_ecal", "custom_recos.decode_mem", "custom_recos.hodo_reco", "custom_recos.bcp_reco"],
+        "plugins": ["custom_recos.decode_ecal", "custom_recos.decode_mem", "custom_recos.hodo_reco", "custom_recos.bcp_reco", "custom_plot_functions.drawTTgrid"],
         "spill_type": {
             "electrons": {
                 "plot_list": "plotlists/plot_list_electrons.csv",
