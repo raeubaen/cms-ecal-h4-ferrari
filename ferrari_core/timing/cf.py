@@ -1,7 +1,16 @@
-import timing.pseudo_t
-from scipy import ndimage
-from registry import register_routine
-import numpy as np
+import os
+
+USE_CUDA = os.getenv("USE_CUDA", "0") == "1"
+
+if USE_CUDA:
+    import cupy as xp
+    from cupyx.scipy import ndimage
+else:
+    import numpy as xp
+    from scipy import ndimage
+
+from ..registry import register_routine
+from .pseudo_t import pseudo_t
 
 def build_peak_interp(
     rise_valid,
@@ -18,17 +27,17 @@ def build_peak_interp(
 
     n_wf, _ = rise_valid.shape
 
-    offsets = np.arange(
+    offsets = xp.arange(
         -rise_interp_left_samples,
         rise_interp_right_samples + 1,
-        dtype=np.int32,
+        dtype=xp.int32,
     )
 
     # center is peak reference (corrected)
     idx_peak = rise_samples_pre_peak + offsets[None, :]
-    idx_peak = np.clip(idx_peak, 0, rise_valid.shape[1] - 1)
+    idx_peak = xp.clip(idx_peak, 0, rise_valid.shape[1] - 1)
 
-    peak_segment = np.take_along_axis(
+    peak_segment = xp.take_along_axis(
         rise_valid,
         idx_peak,
         axis=1,
@@ -40,7 +49,7 @@ def build_peak_interp(
         order=5,
     )
 
-    peak_value = np.max(peak_interp, axis=1)
+    peak_value = xp.max(peak_interp, axis=1)
 
     print(peak_value.shape)
     return peak_value
@@ -54,4 +63,4 @@ def cf(signal_window, valid, max_idx, values_max, **kwargs):
 
   thresholds = build_peak_interp(rise_valid, rise_samples_pre_peak, rise_interp_left_samples, rise_interp_right_samples, interpolation_factor) * cf
 
-  return {"time": timing.pseudo_t(rise_valid, valid, thresholds, sampling_rate, interpolation_factor, max_idx, rise_interp_left_samples, rise_interp_right_samples, rise_samples_pre_peak)}
+  return {"time": pseudo_t(rise_valid, valid, thresholds, sampling_rate, interpolation_factor, max_idx, rise_interp_left_samples, rise_interp_right_samples, rise_samples_pre_peak)}

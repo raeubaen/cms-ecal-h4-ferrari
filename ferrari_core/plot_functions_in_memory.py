@@ -3,7 +3,9 @@ import time, re, os, ROOT, sys
 import numpy as np
 import traceback
 import shutil
-from registry import get_routine
+import glob
+
+from .registry import get_routine
 
 #not implemented!!
 def plot_chunk(args):
@@ -50,7 +52,7 @@ def plot(row, uproot_dict, outputfolder, subfolders_list, f=None, just_draw=Fals
     os.makedirs(f"{outputfolder}/{row.folder}/", exist_ok=True)
 
     if row.folder not in subfolders_list:
-      os.system(f"rm {outputfolder}/{row.folder}/*.csv")
+      if glob.glob(f"{outputfolder}/{row.folder}/*.csv"): os.system(f"rm {outputfolder}/{row.folder}/*.csv")
       if php_files is not None:
         for php_f in php_files:
           os.system(f"/bin/cp {outputfolder}/{php_f}.php {outputfolder}/{row.folder}/{php_f}.php")
@@ -112,7 +114,7 @@ def plot(row, uproot_dict, outputfolder, subfolders_list, f=None, just_draw=Fals
         if just_draw:
           h = f.Get(f"{name}")
         else:
-          h = ROOT.TH1F(name, row.title, int(row.binsnx), float(row.binsminx), float(row.binsmaxx))
+          h = ROOT.TH1F(name, name, int(row.binsnx), float(row.binsminx), float(row.binsmaxx))
 
           time_fill = time.time()
           h.FillN(len(x), x.astype(np.float64), weight.astype(np.float64))
@@ -158,7 +160,7 @@ def plot(row, uproot_dict, outputfolder, subfolders_list, f=None, just_draw=Fals
         else:
           #print("evaluating y: ")
           y = eval_formula(row.y, uproot_dict).ravel()
-          h = ROOT.TH2F(name, row.title,
+          h = ROOT.TH2F(name, name,
                       int(row.binsnx), float(row.binsminx), float(row.binsmaxx),
                       int(row.binsny), float(row.binsminy), float(row.binsmaxy))
           #print("x.shape: ", x.shape, flush=True)
@@ -184,7 +186,7 @@ def plot(row, uproot_dict, outputfolder, subfolders_list, f=None, just_draw=Fals
           y = np.nan_to_num(y_notflat.ravel(), nan=-99999)
           #print("evaluating z: ")
           z = np.nan_to_num(eval_formula(row.z, uproot_dict).ravel(), nan=-999999)
-          h = ROOT.TH2D(name, row.title,
+          h = ROOT.TH2D(name, name,
                             int(row.binsnx), float(row.binsminx), float(row.binsmaxx),
                             int(row.binsny), float(row.binsminy), float(row.binsmaxy))
 
@@ -195,7 +197,6 @@ def plot(row, uproot_dict, outputfolder, subfolders_list, f=None, just_draw=Fals
                 z.astype(np.float64)*n_ch)
           #print(f"fillN 2D took {time.time() - time_fill}", file=sys.stderr, flush=True)
 
-        h.Scale(1/h.GetEntries())
         t0 = time.time()
         h.Draw("ZCOL")
         #print(f"drawing plots took: {time.time() - t0}s")
@@ -210,6 +211,10 @@ def plot(row, uproot_dict, outputfolder, subfolders_list, f=None, just_draw=Fals
 
     h.GetXaxis().SetTitle(row.xlabel)
 
+    if row.normalize_with_entries != "":
+        if int(row.normalize_with_entries) == 1:
+          h.Scale(1/h.GetEntries())
+
     if row.add_commands.strip() != "":
       exec(row.add_commands)
       c.Update()
@@ -219,7 +224,9 @@ def plot(row, uproot_dict, outputfolder, subfolders_list, f=None, just_draw=Fals
     if just_draw: c.Write("", ROOT.TObject.kOverwrite)
     else:
       c.Write()
-      if str(row.y).strip() != "0" and str(row.z).strip() != "0": h.Scale(h.GetEntries())
+      if row.normalize_with_entries != "":
+        if int(row.normalize_with_entries) == 1:
+          h.Scale(h.GetEntries())
       h.Write()
     #print(f"writing plots took: {time.time() - t0}s")
 

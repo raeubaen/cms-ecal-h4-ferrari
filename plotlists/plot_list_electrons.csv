@@ -1,4 +1,4 @@
-name,title,folder,x,y,z,cuts,color,binsnx,binsminx,binsmaxx,binsny,binsminy,binsmaxy,contours,xlabel,ylabel,zlabel,add_commands
+name,normalize_with_entries,folder,x,y,z,cuts,color,binsnx,binsminx,binsmaxx,binsny,binsminy,binsmaxy,contours,xlabel,ylabel,zlabel,add_commands
 peak_vs_charge_seed,,ecal,${ecal_charge_seed},${ecal_peak_seed},0,,kBlack,1000,0,10000,1000,0,10000,0,Charge[ADC],Peak[ADC],,
 #,,,,,,,,,,,,,,,,,,
 charge_sum_5x5,,main,${ecal_charge_sum_5x5},0,0,,kBlue,1000,0,10000,0,0,0,0,charge_{5x5} [ADC counts],ADC counts,, 
@@ -13,14 +13,14 @@ ecal_mcp_diff_clock_corr,,ecal,"np.fmod(np.take_along_axis(${ecal_lsfit_time}, $
 #
 highest_ch_peak,,main,"np.take_along_axis( ${ecal_peak}, ${ecal_highest_ch}[:, None].astype(np.int32), axis=1)",0,0,,kBlue,1000,0,10000,0,0,0,0,highest_ch_peak,ADC counts,, 
 #,,,,,,,,,,,,,,,,,,
-mean_charge,,ecal,${ecal_ieta},${ecal_iphi},${ecal_charge},,0,60,0.5,60.5,10,0.5,10.5,25,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c); c.SetLogz();"
-mean_sample_max,,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak_pos},,0,60,0.5,60.5,10,0.5,10.5,25,eta,phi,sampleindex,"_ = get_routine('drawTTgrid')(h, c)"
-mean_values,,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_mean},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
-std_values,,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_std},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
-mean_pedestals,,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_mean},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
-mean_values_max,,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c); c.SetLogz();"
-std_pedestals,,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_std},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
-baseline_integral,,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_integral},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+mean_charge,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_charge},,0,60,0.5,60.5,10,0.5,10.5,25,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c); c.SetLogz();"
+mean_sample_max,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak_pos},,0,60,0.5,60.5,10,0.5,10.5,25,eta,phi,sampleindex,"_ = get_routine('drawTTgrid')(h, c)"
+mean_values,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_mean},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+std_values,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_std},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+mean_pedestals,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_mean},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+mean_values_max,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c); c.SetLogz();"
+std_pedestals,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_std},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+baseline_integral,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_integral},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
 #,,,,,,,,,,,,,,,,,,
 centroid_charge_5x5_sum_weighted,,main,${ecal_ieta_centroid},${ecal_iphi_centroid},0,${ecal_charge_sum_5x5}>300,0,6000,0.5,60.5,1000,0.5,10.5,1000,eta,phi,5x5 charge,"_ = get_routine('drawTTgrid')(h, c); c.SetLogz();"
 #,,,,,,,,,,,,,,,,,,

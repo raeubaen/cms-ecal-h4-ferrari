@@ -1,5 +1,7 @@
 import ROOT
-from registry import register_routine
+
+from ferrari_core.registry import register_routine
+
 
 @register_routine("drawTTgrid")
 def drawTTgrid(hist, c):

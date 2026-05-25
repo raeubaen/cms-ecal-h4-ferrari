@@ -7,8 +7,8 @@ sys.path.append('../')
 import os, json, uproot, argparse, sys, time, ROOT
 import pandas as pd
 import numpy as np
+
 import plot_functions_in_memory as plot_functions
-from multiprocessing import Pool
 
 
 def main(arguments):

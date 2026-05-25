@@ -1,16 +1,20 @@
 import os, json, uproot, argparse, sys, time, ROOT, copy
-import awkward as ak
 import numpy as np
-import reco_functions
+
 import pandas as pd
-import plot_functions_in_memory as plot_functions
-import multiprocessing as mp
-import reco_utils
 import importlib
-from registry import get_routine
-from default_generic_reco_conf import default_generic_reco_conf
+from pathlib import Path
+
+from . import reco_functions
+from . import plot_functions_in_memory as plot_functions
+from . import reco_utils
+from .registry import get_routine
+from .default_generic_reco_conf import default_generic_reco_conf
 
 def main(arguments):
+
+    BASE_DIR = Path(__file__).resolve().parent
+
     print("Entered reco.py")
     # start time
     time_start = time.time()
@@ -128,11 +132,11 @@ def main(arguments):
       plotconf_df = pd.read_csv(plot_list_file, sep=",", comment='#', quotechar='"', engine='python')
       plotconf_df = plotconf_df.fillna("")
 
-      ROOT.gROOT.LoadMacro("root_logon.C")
+      ROOT.gROOT.LoadMacro(f"{BASE_DIR}/root_logon.C")
       os.system(f"mkdir -p {args.plot_output_folder}")
       php_files = ["index", "view"]
       for php_f in php_files:
-        os.system(f"/bin/cp php/{php_f}.php {args.plot_output_folder}/{php_f}.php")
+        os.system(f"/bin/cp {BASE_DIR}/php/{php_f}.php {args.plot_output_folder}/{php_f}.php")
 
       f = ROOT.TFile(f"{args.plot_output_folder}/histos.root", "recreate")
 

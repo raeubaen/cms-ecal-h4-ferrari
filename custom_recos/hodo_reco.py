@@ -1,4 +1,4 @@
-from registry import register_routine
+from ferrari_core.registry import register_routine
 import numpy as np
 import awkward as ak
 

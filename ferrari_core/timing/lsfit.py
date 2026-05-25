@@ -1,8 +1,17 @@
 import ROOT
 import sys
+import os
 
-from registry import register_routine
-import numpy as np
+USE_CUDA = os.getenv("USE_CUDA", "0") == "1"
+
+if USE_CUDA:
+    import cupy as xp
+    from cupyx.scipy import ndimage
+else:
+    import numpy as xp
+    from scipy import ndimage
+
+from ..registry import register_routine
 
 
 def load_segments_txt(filename):
@@ -37,30 +46,30 @@ def load_segments_txt(filename):
 class PiecewiseCubicSplineNP:
 
     def __init__(self, segments, Ts):
-        self.x0 = np.array([s["x0"] for s in segments])
-        self.x1 = np.array([s["x1"] for s in segments])
-        self.xc = np.array([s["xc"] for s in segments])
+        self.x0 = xp.array([s["x0"] for s in segments])
+        self.x1 = xp.array([s["x1"] for s in segments])
+        self.xc = xp.array([s["xc"] for s in segments])
 
-        self.a = np.array([s["a"] for s in segments])
-        self.b = np.array([s["b"] for s in segments])
-        self.c = np.array([s["c"] for s in segments])
-        self.d = np.array([s["d"] for s in segments])
+        self.a = xp.array([s["a"] for s in segments])
+        self.b = xp.array([s["b"] for s in segments])
+        self.c = xp.array([s["c"] for s in segments])
+        self.d = xp.array([s["d"] for s in segments])
         self.Ts = Ts
 
     def _select(self, x):
 
-        x = np.asarray(x)[None, ...]  # (1, E, C, N)
+        x = xp.asarray(x)[None, ...]  # (1, E, C, N)
 
         x0 = self.x0[:, None, None]
         x1 = self.x1[:, None, None]
 
         inside = (x >= x0) & (x <= x1)
 
-        idx = np.argmax(inside, axis=0)  # (E, C, N)
+        idx = xp.argmax(inside, axis=0)  # (E, C, N)
 
         xc = self.xc[idx]
         dx = x[0] - xc
-        mask = np.abs(dx) <= (self.Ts / 2.0)
+        mask = xp.abs(dx) <= (self.Ts / 2.0)
 
         return idx, dx, mask
 
@@ -76,7 +85,7 @@ class PiecewiseCubicSplineNP:
 
         f = a + b*dx + c*dx*dx + d*dx*dx*dx
 
-        return np.where(mask, f, 0.0)
+        return xp.where(mask, f, 0.0)
 
 
 
@@ -90,7 +99,7 @@ class PiecewiseCubicSplineNP:
 
         deriv = b + 2*c*dx + 3*d*dx*dx
 
-        return np.where(mask, deriv, 0.0)
+        return xp.where(mask, deriv, 0.0)
 
 
 
@@ -99,8 +108,8 @@ def fit_pulse_iterative(waveforms, pulse, t, t_data_peak, t_template_peak, n_ite
     EC, N = waveforms.shape
 
     # initial alignment from DATA only
-    dt = np.full((EC), t_data_peak - t_template_peak)   # (EC)
-    A  = np.ones((EC))
+    dt = xp.full((EC), t_data_peak - t_template_peak)   # (EC)
+    A  = xp.ones((EC))
 
 
     for _ in range(n_iter):
@@ -119,19 +128,19 @@ def fit_pulse_iterative(waveforms, pulse, t, t_data_peak, t_template_peak, n_ite
         # -------------------------
         # projections (sum over samples)
         # -------------------------
-        Ap = np.sum(waveforms * P, axis=1)   # (EC)
-        Ad = np.sum(waveforms * dP, axis=1)
+        Ap = xp.sum(waveforms * P, axis=1)   # (EC)
+        Ad = xp.sum(waveforms * dP, axis=1)
 
 
-        PP   = np.sum(P * P, axis=1)
-        PdP  = np.sum(P * dP, axis=1)
-        dPdP = np.sum(dP * dP, axis=1)
+        PP   = xp.sum(P * P, axis=1)
+        PdP  = xp.sum(P * dP, axis=1)
+        dPdP = xp.sum(dP * dP, axis=1)
 
         # -------------------------
         # solve 2x2 system
         # -------------------------
         denom = PP * dPdP - PdP * PdP
-        denom = np.clip(denom, 1e-12, None)
+        denom = xp.clip(denom, 1e-12, None)
 
         A_new = (Ap * dPdP - Ad * PdP) / denom
         Ccorr = (Ad * PP - Ap * PdP) / denom
@@ -139,7 +148,7 @@ def fit_pulse_iterative(waveforms, pulse, t, t_data_peak, t_template_peak, n_ite
         # -------------------------
         # update
         # -------------------------
-        dt += (-Ccorr / np.clip(A_new, 1e-12, None))
+        dt += (-Ccorr / xp.clip(A_new, 1e-12, None))
         A = A_new
 
     return A, dt
@@ -151,7 +160,7 @@ def lsfit(signal_window, valid, max_idx, values_max, **kwargs):
     globals().update(kwargs)
     Ts = 1/sampling_rate
 
-    idx_valid = np.where(valid)
+    idx_valid = xp.where(valid)
 
     signal_window_valid = signal_window[idx_valid]
 
@@ -160,10 +169,10 @@ def lsfit(signal_window, valid, max_idx, values_max, **kwargs):
     segs = load_segments_txt(spline_file)
     pulse = PiecewiseCubicSplineNP(segs, Ts)
 
-    t_grid = np.arange(signal_window_valid.shape[1]) * Ts
+    t_grid = xp.arange(signal_window_valid.shape[1]) * Ts
 
     pulse_values = pulse.eval(t_grid)
-    t_pulse_peak = t_grid[np.argmax(pulse_values)]
+    t_pulse_peak = t_grid[xp.argmax(pulse_values)]
 
 
     amp_valid, dt_valid = fit_pulse_iterative(
@@ -174,13 +183,13 @@ def lsfit(signal_window, valid, max_idx, values_max, **kwargs):
         t_pulse_peak     # model peak (scalar)
     )
 
-    fit_time_valid = dt_valid + np.ones(dt_valid.shape)*signal_samples_pre_peak*Ts + max_idx_valid*Ts
+    fit_time_valid = dt_valid + xp.ones(dt_valid.shape)*signal_samples_pre_peak*Ts + max_idx_valid*Ts
 
-    fit_t = np.zeros(valid.shape, dtype=np.float32)
+    fit_t = xp.zeros(valid.shape, dtype=xp.float32)
 
     fit_t[idx_valid] = fit_time_valid
 
-    amp_fit = np.zeros(valid.shape, dtype=np.float32)
+    amp_fit = xp.zeros(valid.shape, dtype=xp.float32)
 
     amp_fit[idx_valid] = amp_valid
 
