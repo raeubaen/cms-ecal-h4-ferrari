@@ -1,7 +1,7 @@
-from registry import register_reco
+from registry import register_routine
 import numpy as np
 
-@register_reco("bcp")
+@register_routine("bcp")
 def bcp_reco(tree, detector_name, detector_dict_piece):
 
   bcp_clk = tree["bcp_clk"].array(library="np")

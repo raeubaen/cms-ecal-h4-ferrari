@@ -6,7 +6,7 @@ import reco_utils
 
 from timing import *
 
-from registry import get_reco
+from registry import get_routine
 
 def generic_reco(waves, detector_name, **kwargs):
 
@@ -151,7 +151,7 @@ def generic_reco(waves, detector_name, **kwargs):
     valid = ~mask_under_thr & timing_mask[None, :]
 
     for timing_method in timing_methods:
-      timing_function = get_reco(timing_method)
+      timing_function = get_routine(timing_method)
 
       timing_function_result = timing_function(signal_window, valid, max_idx, values_max, **kwargs)
 

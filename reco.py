@@ -7,7 +7,7 @@ import plot_functions_in_memory as plot_functions
 import multiprocessing as mp
 import reco_utils
 import importlib
-from registry import get_reco
+from registry import get_routine
 from default_generic_reco_conf import default_generic_reco_conf
 
 def main(arguments):
@@ -91,7 +91,7 @@ def main(arguments):
               active_ch_list = gen_reco_dict["ch_map"]
 
             waves = tree[gen_reco_dict["waves_branch"]].array(library="np")[:, active_ch_list, :]
-            if gen_reco_dict["decode"] is not None: waves = get_reco(gen_reco_dict["decode"])(waves.astype(np.uint16), gain_list)
+            if gen_reco_dict["decode"] is not None: waves = get_routine(gen_reco_dict["decode"])(waves.astype(np.uint16), gain_list)
             if gen_reco_dict["remove_last_n_samples"] != 0: waves = waves[:, :, : -gen_reco_dict["remove_last_n_samples"]]
             if gen_reco_dict["to_be_inverted"]: waves = 4096 - waves #must be inverted if the signal are with negative rising slope
 
@@ -102,7 +102,7 @@ def main(arguments):
             )
 
         else:
-            reco_dict[detector]["mask"], reco_dict[detector]["arrays"] = get_reco(dd["custom_reco"])(tree, detector, dd)
+            reco_dict[detector]["mask"], reco_dict[detector]["arrays"] = get_routine(dd["custom_reco"])(tree, detector, dd)
 
         print(""f"{detector} reco took {-time_reco_det + time.time():.1f} s")
     print(f"reco took: {-time_reco + time.time():.1f} s")

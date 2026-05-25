@@ -1,7 +1,7 @@
 import ROOT
 import sys
 
-from registry import register_reco
+from registry import register_routine
 import numpy as np
 
 
@@ -145,7 +145,7 @@ def fit_pulse_iterative(waveforms, pulse, t, t_data_peak, t_template_peak, n_ite
     return A, dt
 
 
-@register_reco("lsfit")
+@register_routine("lsfit")
 def lsfit(signal_window, valid, max_idx, values_max, **kwargs):
 
     globals().update(kwargs)

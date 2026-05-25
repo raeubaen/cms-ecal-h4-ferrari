@@ -1,10 +1,10 @@
-RECO_REGISTRY = {}
+ROUTINE_REGISTRY = {}
 
-def get_reco(name):
-    return RECO_REGISTRY[name]
+def get_routine(name):
+    return ROUTINE_REGISTRY[name]
 
-def register_reco(name):
+def register_routine(name):
     def wrapper(fn):
-        RECO_REGISTRY[name] = fn
+        ROUTINE_REGISTRY[name] = fn
         return fn
     return wrapper

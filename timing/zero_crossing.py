@@ -1,8 +1,8 @@
 from timing.pseudo_t import get_rise_interp
-from registry import register_reco
+from registry import register_routine
 import numpy as np
 
-@register_reco("zero_crossing")
+@register_routine("zero_crossing")
 def zero_crossing(signal_window, valid, max_idx, values_max, **kwargs):
     globals().update(kwargs)
 

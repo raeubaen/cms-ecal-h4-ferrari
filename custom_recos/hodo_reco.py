@@ -1,8 +1,8 @@
-from registry import register_reco
+from registry import register_routine
 import numpy as np
 import awkward as ak
 
-@register_reco("hodo")
+@register_routine("hodo")
 def hodo_reco(tree, detector_name, detector_dict_piece):
   det = detector_name
   reco_dict = {}

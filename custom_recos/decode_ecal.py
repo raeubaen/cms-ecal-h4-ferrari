@@ -1,7 +1,7 @@
-from registry import register_reco
+from registry import register_routine
 import numpy as np
 
-@register_reco("decode_ecal")
+@register_routine("decode_ecal")
 def decode_ecal(waves, gain_list):
     bit13_mask = 1 << 13 #validity bit
     bit12_mask = 1 << 12 #gain bit

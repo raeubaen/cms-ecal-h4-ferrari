@@ -1,8 +1,8 @@
-from registry import register_reco
+from registry import register_routine
 import numpy as np
 
 
-@register_reco("decode_mem")
+@register_routine("decode_mem")
 def decode_mem(waves, gain_list):
     bit13_mask = 1 << 13 #validity bit
     bit12_mask = 1 << 12 #gain bit
