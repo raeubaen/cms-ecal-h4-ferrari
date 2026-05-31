@@ -8,6 +8,7 @@ from pathlib import Path
 from . import reco_functions
 from . import plot_functions_in_memory as plot_functions
 from . import reco_utils
+
 from .registry import get_routine
 from .default_generic_reco_conf import default_generic_reco_conf
 
@@ -71,13 +72,11 @@ def main(arguments):
         print(f"reco {detector} ongoing")
         dd = detectors_dict[detector]
 
-
         reco_dict[detector] = {}
 
         if dd["generic_reco"] is not None:
             gen_reco_dict = dd["generic_reco"]
-
-            geo_dict, chid_dict, gain_list, intercalib_list = None, None, None, None
+            geo_dict, chid_dict, gain_list, intercalib_list, gain_is_high = None, None, None, None, False
 
             if gen_reco_dict["ch_map"] == None: active_ch_list = slice(None)
             elif isinstance(gen_reco_dict["ch_map"], str):
@@ -89,20 +88,22 @@ def main(arguments):
                 geo_dict = {coord: map_df[coord].to_numpy()[active_row_list] for coord in gen_reco_dict["geo_needed"]}
               if gen_reco_dict["apply_gain_ratios"] is not None:
                 gain_list = map_df[gen_reco_dict["apply_gain_ratios"]].to_numpy()[active_row_list]
+
               if gen_reco_dict["apply_intercalib"]:
                 intercalib_list = map_df[gen_reco_dict["apply_intercalib"]].to_numpy()[active_row_list]
             elif isinstance(gen_reco_dict["ch_map"], list):
               active_ch_list = gen_reco_dict["ch_map"]
 
             waves = tree[gen_reco_dict["waves_branch"]].array(library="np")[:, active_ch_list, :]
-            if gen_reco_dict["decode"] is not None: waves = get_routine(gen_reco_dict["decode"])(waves.astype(np.uint16), gain_list)
+            if gen_reco_dict["decode_and_select_gains"] is not None:
+                waves, gain_is_high = get_routine(gen_reco_dict["decode_and_select_gains"])(waves.astype(np.uint16))
             if gen_reco_dict["remove_last_n_samples"] != 0: waves = waves[:, :, : -gen_reco_dict["remove_last_n_samples"]]
             if gen_reco_dict["to_be_inverted"]: waves = 4096 - waves #must be inverted if the signal are with negative rising slope
 
             reco_conf = copy.deepcopy(default_generic_reco_conf)
             reco_conf.update(gen_reco_dict["reco_conf"])
             reco_dict[detector]["mask"], reco_dict[detector]["arrays"] = reco_functions.generic_reco(
-              waves.astype(np.float32), detector, id=chid_dict, geo_dict=geo_dict, intercalib_list=intercalib_list, **reco_conf #n_cpus=args.n_cpus: not implemented
+              waves.astype(np.float32), detector, gain_is_high=gain_is_high, gain_list=gain_list, id=chid_dict, geo_dict=geo_dict, intercalib_list=intercalib_list, **reco_conf #n_cpus=args.n_cpus: not implemented
             )
 
         else:

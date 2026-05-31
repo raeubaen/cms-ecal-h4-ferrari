@@ -1,5 +1,6 @@
 import time
 import os
+import numpy as np
 
 USE_CUDA = os.getenv("USE_CUDA", "0") == "1"
 
@@ -12,7 +13,7 @@ from .import reco_utils
 from .timing import *
 from .registry import get_routine
 
-def generic_reco(waves, detector_name, **kwargs):
+def generic_reco(waves, detector_name, gain_is_high=False, gain_list=None, **kwargs):
 
   globals().update(kwargs)
 
@@ -58,6 +59,11 @@ def generic_reco(waves, detector_name, **kwargs):
 
   signal_window = waves[tuple(signal_window_3d_indices)]
 
+  if gain_list is not None:
+      gains = gain_list[None, :, None]
+      gain_is_high_window = gain_is_high[tuple(signal_window_3d_indices)]
+      signal_window *= np.where(gain_is_high_window, gains, 1)
+
   if intercalib_list is not None:
     signal_window *= intercalib_list[None, :, None]
 
@@ -81,7 +87,8 @@ def generic_reco(waves, detector_name, **kwargs):
     if coord_z is not None: iz = (geo_dict[key] for key in coord_z)
     else: iz = None
 
-    if do_central_region:
+    if not do_central_region: mask_central_region = xp.full(ix.shape, True)
+    else:
       charge_mean = xp.mean(charge, axis=0)
       seed_ch = -999
 
@@ -104,15 +111,6 @@ def generic_reco(waves, detector_name, **kwargs):
 
       print(f"seed/central_region/fractions took: {time.time() - t0}")
       t0 = time.time()
-
-      w_log = xp.maximum(0.0,w0_centroid + xp.log(xp.clip(charge_fraction_central_region, 1e-8, None)))
-      w_log /= (xp.sum(w_log, axis=1, keepdims=True))
-
-      ix_centroid = w_log[:, mask_central_region] @ ix[mask_central_region]
-      iy_centroid = w_log[:, mask_central_region] @ iy[mask_central_region]
-
-      print(f"centrois took: {time.time() - t0}")
-
 
       iy_within_central_region = iy - iy[seed_ch]
       ix_within_central_region = ix - ix[seed_ch]
@@ -141,11 +139,27 @@ def generic_reco(waves, detector_name, **kwargs):
         f"{det}_highest_charge_over_{kxk}": highest_charge/charge_sum_central_region,
         f"{det}_{coords_2d_list[1]}_within_{kxk}": iy_within_central_region, f"{det}_{coords_2d_list[0]}_within_{kxk}": ix_within_central_region,
         f"{det}_charge_divided_{kxk}": charge_fraction_central_region, f"{det}_seed_ch": seed_ch,
-        f"{det}_{coords_2d_list[0]}_centroid": ix_centroid, f"{det}_{coords_2d_list[1]}_centroid": iy_centroid,
         f"{det}_highest_ch": highest_ch, f"{det}_highest_charge": highest_charge, f"{det}_highest_peak": highest_peak,
       })
 
       #mask_selected_events = mask_low_charge_seed
+
+    if do_centroid:
+      charge_fraction_central_region = xp.zeros(charge.shape)
+      charge_fraction_central_region[:, mask_central_region] = charge[:, mask_central_region] / charge_sum_central_region[:, xp.newaxis]
+
+      if w0_log_centroid is not None:
+        w = xp.maximum(0.0,w0_log_centroid + xp.log(xp.clip(charge_fraction_central_region, 1e-8, None)))
+        w /= (xp.sum(w, axis=1, keepdims=True))
+      else: w = xp.clip(charge_fraction_central_region, 1e-8, None)
+
+      ix_centroid = w[:, mask_central_region] @ ix[mask_central_region]
+      iy_centroid = w[:, mask_central_region] @ iy[mask_central_region]
+
+      return_dict.update({f"{det}_{coords_2d_list[0]}_centroid": ix_centroid, f"{det}_{coords_2d_list[1]}_centroid": iy_centroid})
+
+
+      print(f"centrois took: {time.time() - t0}")
 
     ix = xp.repeat(ix[xp.newaxis, :], charge.shape[0], axis=0)
     iy = xp.repeat(iy[xp.newaxis, :], charge.shape[0], axis=0)

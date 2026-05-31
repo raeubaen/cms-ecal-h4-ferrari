@@ -38,13 +38,12 @@
                 "_comment": "null ch_map means all channels active, list is active chs, string is map filename",
                 "ch_map": "maps/tb_map.csv",
                 "chid_vars_list": ["n_bcp","tt","ch_in_tt","module"],
-                "decode": "decode_ecal",
                 "to_be_inverted": false,
-                "waves_branch": "xtal_sample",
                 "remove_last_n_samples": 0,
                 "geo_needed": ["ieta", "iphi"],
                 "apply_gain_ratios": "high_over_low_gain_ratio",
                 "apply_intercalib": "intercalib_factor",
+                "decode_and_select_gains": "decode_ecal",
                 "reco_conf": {
                     "signal_samples_pre_peak": 5,
                     "signal_samples_post_peak": 10,
@@ -62,7 +61,8 @@
                     "save_only_central_region_info": false,
                     "charge_to_peak_slope": 0.271,
                     "charge_to_peak_conversion": true,
-                    "w0_centroid": 3.8,
+                    "do_centroid": true,
+                    "w0_log_centroid": 3.8,
                     "min_outer_over_seed_ratio": 0.2,
                     "central_region_width": 5
                 }
@@ -82,6 +82,7 @@
                 "remove_last_n_samples": 0,
                 "apply_gain_ratios": null,
                 "apply_intercalib": null,
+                "decode_and_select_gains": null,
                 "reco_conf": {
                     "signal_samples_pre_peak": 5,
                     "signal_samples_post_peak": 10,
@@ -103,6 +104,9 @@
                 "decode": null,
                 "to_be_inverted": true,
                 "remove_last_n_samples": 50,
+                "apply_gain_ratios": null,
+                "apply_intercalib": null,
+                "decode_and_select_gains": null,
                 "reco_conf": {
                     "signal_samples_pre_peak": 13,
                     "signal_samples_post_peak": 15,
@@ -130,6 +134,9 @@
                 "to_be_inverted": false,
                 "generic_reco": true,
                 "remove_last_n_samples": 993,
+                "apply_gain_ratios": null,
+                "apply_intercalib": null,
+                "decode_and_select_gains": null,
                 "reco_conf": {
                     "signal_samples_pre_peak": 30,
                     "signal_samples_post_peak": 30,
@@ -159,6 +166,9 @@
                 "decode": null,
                 "to_be_inverted": true,
                 "remove_last_n_samples": 50,
+                "apply_gain_ratios": null,
+                "apply_intercalib": null,
+                "decode_and_select_gains": null,
                 "reco_conf": {
                     "signal_samples_pre_peak": 20,
                     "signal_samples_post_peak": 20,
