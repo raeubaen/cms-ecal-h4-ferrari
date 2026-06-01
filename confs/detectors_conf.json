@@ -24,7 +24,8 @@
                 "option": {
                     "ecal": {
                         "reco_conf": {
-                            "do_central_region": false
+                            "do_central_region": false,
+                            "do_centroid": false
                         }
                     }
                 }
