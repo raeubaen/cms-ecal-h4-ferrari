@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#DRAFT COPIED FROM CRILIN CODE - REDO!!! FAST BUT COMPULSORY!
+
 #folder=$(ls -1 local/rawdata | sort -V | tail -n 1)
 
 #lastfile=$(ls -1 local/rawdata/$folder | sort -V | tail -n 2 | head -n 1)
