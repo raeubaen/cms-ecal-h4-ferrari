@@ -62,7 +62,7 @@ UNPACKED_FILE="${RECO_UNPACKED_OUTDIR}/DataTree_dqm/$RUN/${SPILL}.root"
 
 if [ "$dounpack" -ne 0 ]; then
 
-  mkdir -p ${RECO_UNPACKED_OUTDIR}/DataTree/$RUN/
+  mkdir -p ${RECO_UNPACKED_OUTDIR}/DataTree_dqm/$RUN/
 
   if [ $UNPACKER_ROUTINE == "DANTE" ]; then
 
@@ -73,7 +73,7 @@ if [ "$dounpack" -ne 0 ]; then
     echo "Unpacking run $RUN spill $SPILL with DANTE..."
 
     echo "./h4_raw2root ${RAW_DIR}/$RUN/$SPILL.raw ${UNPACKED_FILE}"
-    ./h4_raw2root ${RAW_DIR}/$RUN/$SPILL.raw ${UNPACKED_FILE} > ${RECO_UNPACKED_OUTDIR}/DataTree/$RUN/${SPILL}.txt
+    ./h4_raw2root ${RAW_DIR}/$RUN/$SPILL.raw ${UNPACKED_FILE} > ${RECO_UNPACKED_OUTDIR}/DataTree_dqm/$RUN/${SPILL}.txt
 
     echo "Unpacked DONE for run $RUN spill $SPILL with DANTE..."
   elif [ $UNPACKER_ROUTINE == "NUMPY" ]; then
@@ -94,7 +94,7 @@ if [ "$dounpack" -ne 0 ]; then
 fi
 
 cd ${WORKING_DIR}
-mkdir -p ${RECO_UNPACKED_OUTDIR}/reco_dmq/run_$RUN/
+mkdir -p ${RECO_UNPACKED_OUTDIR}/reco_dqm/run_$RUN/
 
 PLOT_CURRENT_FOLDER=$PLOT_MAIN_FOLDER/run_$RUN/spill_$SPILL_STR/
 

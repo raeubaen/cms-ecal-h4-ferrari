@@ -7,8 +7,7 @@ export SPILL_LASER=30000000
 
 export PLOT_MAIN_FOLDER="/eos/user/m/mcampana/www/h4dqm/ECAL_TB_2026/"
 export RECO_UNPACKED_OUTDIR="/eos/cms/store/group/dpg_ecal/comm_ecal/upgrade/testbeam/ECALTB_H4_Jun2026/"
-export PROMPT_RECO_FOLDER="${RECO_UNPACKED_OUTDIR}/reco_tests"
-export RECO_FOLDER="${RECO_UNPACKED_OUTDIR}/re-reco"
+
 export UNPACKED_FOLDER="${RECO_UNPACKED_OUTDIR}/DataTree_dqm"
 
 export RAW_DIR="/eos/cms/store/group/dpg_ecal/comm_ecal/upgrade/testbeam/ECALTB_H4_Jun2026/EB/"
@@ -22,4 +21,4 @@ export PHP_FILES_DIR="${HOME_DIR}/cms-ecal-h4-ferrari/ferrari_core/php/"
 export PLOTS_PLUGINS_FOLDER="${HOME_DIR}/cms-ecal-h4-ferrari/custom_plot_functions/"
 export NUMPY_UNPACKED_DIR="${HOME_DIR}/ecal-h4-utils"
 
-export UNPACKER_ROUTINE="NUMPY"
+export UNPACKER_ROUTINE="DANTE"
