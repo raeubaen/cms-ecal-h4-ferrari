@@ -15,32 +15,9 @@ export LOGS_DIR="/eos/user/m/mcampana/www/h4dqm/ECAL_TB_2026/test_logs"
 export DANTE_DIR="/afs/cern.ch/user/e/ecalgit/EBeTe/"
 
 export WORKING_DIR="${HOME_DIR}/cms-ecal-h4-ferrari-dev"
-export JSON_CONF="${HOME_DIR}/cms-ecal-h4-ferrari-dev/confs/detectors_conf_1bcp.json"
+export JSON_CONF="${HOME_DIR}/cms-ecal-h4-ferrari-dev/confs/detectors_conf.json"
 export PHP_FILES_DIR="${HOME_DIR}/cms-ecal-h4-ferrari-dev/ferrari_core/php/"
 export PLOTS_PLUGINS_FOLDER="${HOME_DIR}/cms-ecal-h4-ferrari-dev/custom_plot_functions/"
 export NUMPY_UNPACKED_DIR="${HOME_DIR}/ecal-h4-utils"
 
 export UNPACKER_ROUTINE="NUMPY"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
