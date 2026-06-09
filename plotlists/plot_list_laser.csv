@@ -1,19 +1,19 @@
 name,normalize_with_entries,folder,x,y,z,cuts,color,binsnx,binsminx,binsmaxx,binsny,binsminy,binsmaxy,contours,xlabel,ylabel,zlabel,add_commands
-laser_mean_peak,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak},,0,85,0.5,85.5,20,0.5,10.5,25,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c); c.SetLogz();"
-laser_mean_sample_max,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak_pos},,0,85,0.5,85.5,20,0.5,10.5,25,eta,phi,sampleindex,"_ = get_routine('drawTTgrid')(h, c)"
-laser_mean_values,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_mean},,0,85,0.5,85.5,20,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
-laser_std_values,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_std},,0,85,0.5,85.5,20,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
-laser_mean_pedestals,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_mean},,0,85,0.5,85.5,20,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
-laser_mean_values_max,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak},,0,85,0.5,85.5,20,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
-laser_std_pedestals,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_std},,0,85,0.5,85.5,20,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
-laser_baseline_integral,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_integral},,0,85,0.5,85.5,20,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+laser_mean_peak,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak},,0,85,0.5,85.5,20,0.5,20.5,25,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c); c.SetLogz();"
+laser_mean_sample_max,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak_pos},,0,85,0.5,85.5,20,0.5,20.5,25,eta,phi,sampleindex,"_ = get_routine('drawTTgrid')(h, c)"
+laser_mean_values,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_mean},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+laser_std_values,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_std},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+laser_mean_pedestals,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_mean},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+laser_mean_values_max,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+laser_std_pedestals,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_std},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+laser_baseline_integral,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_integral},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
 #
-mem_mean_peak,1,mem,${mem_ieta},${mem_iphi},${mem_peak},,0,10,90.5,100.5,10,0.5,10.5,25,eta,phi,ADC counts,"c.SetLogz();"
-mem_mean_sample_max,1,mem,${mem_ieta},${mem_iphi},${mem_peak_pos},,0,10,90.5,100.5,10,0.5,10.5,25,eta,phi,sampleindex,
-mem_mean_values,1,mem,${mem_ieta},${mem_iphi},${mem_samples_mean},,0,10,90.5,100.5,10,0.5,10.5,1000,eta,phi,ADC counts,
-mem_std_values,1,mem,${mem_ieta},${mem_iphi},${mem_samples_std},,0,10,90.5,100.5,10,0.5,10.5,1000,eta,phi,ADC counts,
-mem_mean_pedestals,1,mem,${mem_ieta},${mem_iphi},${mem_baseline_mean},,0,10,90.5,100.5,10,0.5,10.5,1000,eta,phi,ADC counts,
-mem_mean_values_max,1,mem,${mem_ieta},${mem_iphi},${mem_peak},,0,10,90.5,100.5,10,0.5,10.5,1000,eta,phi,ADC counts,
-mem_std_pedestals,1,mem,${mem_ieta},${mem_iphi},${mem_baseline_std},,0,10,90.5,100.5,10,0.5,10.5,1000,eta,phi,ADC counts,
-mem_baseline_integral,1,mem,${mem_ieta},${mem_iphi},${mem_baseline_integral},,0,10,90.5,100.5,10,0.5,10.5,1000,eta,phi,ADC counts,
+mem_mean_peak,1,mem,${mem_ieta},${mem_iphi},${mem_peak},,0,10,90.5,100.5,10,0.5,20.5,25,eta,phi,ADC counts,"c.SetLogz();"
+mem_mean_sample_max,1,mem,${mem_ieta},${mem_iphi},${mem_peak_pos},,0,10,90.5,100.5,10,0.5,20.5,25,eta,phi,sampleindex,
+mem_mean_values,1,mem,${mem_ieta},${mem_iphi},${mem_samples_mean},,0,10,90.5,100.5,10,0.5,20.5,1000,eta,phi,ADC counts,
+mem_std_values,1,mem,${mem_ieta},${mem_iphi},${mem_samples_std},,0,10,90.5,100.5,10,0.5,20.5,1000,eta,phi,ADC counts,
+mem_mean_pedestals,1,mem,${mem_ieta},${mem_iphi},${mem_baseline_mean},,0,10,90.5,100.5,10,0.5,20.5,1000,eta,phi,ADC counts,
+mem_mean_values_max,1,mem,${mem_ieta},${mem_iphi},${mem_peak},,0,10,90.5,100.5,10,0.5,20.5,1000,eta,phi,ADC counts,
+mem_std_pedestals,1,mem,${mem_ieta},${mem_iphi},${mem_baseline_std},,0,10,90.5,100.5,10,0.5,20.5,1000,eta,phi,ADC counts,
+mem_baseline_integral,1,mem,${mem_ieta},${mem_iphi},${mem_baseline_integral},,0,10,90.5,100.5,10,0.5,20.5,1000,eta,phi,ADC counts,
 
