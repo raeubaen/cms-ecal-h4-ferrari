@@ -13,14 +13,14 @@ ecal_mcp_diff_clock_corr,,ecal,"np.fmod(np.take_along_axis(${ecal_lsfit_time}, $
 #
 highest_ch_peak,,main,"np.take_along_axis( ${ecal_peak}, ${ecal_highest_ch}[:, None].astype(np.int32), axis=1)",0,0,,kBlue,1000,0,10000,0,0,0,0,highest_ch_peak,ADC counts,, 
 #,,,,,,,,,,,,,,,,,,
-mean_charge,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_charge},,0,60,0.5,60.5,10,0.5,10.5,25,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c); c.SetLogz();"
-mean_sample_max,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak_pos},,0,60,0.5,60.5,10,0.5,10.5,25,eta,phi,sampleindex,"_ = get_routine('drawTTgrid')(h, c)"
-mean_values,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_mean},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
-std_values,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_std},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
-mean_pedestals,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_mean},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
-mean_values_max,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c); c.SetLogz();"
-std_pedestals,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_std},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
-baseline_integral,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_integral},,0,60,0.5,60.5,10,0.5,10.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+mean_charge,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_charge},,0,85,0.5,85.5,20,0.5,20.5,25,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c); c.SetLogz();"
+mean_sample_max,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak_pos},,0,85,0.5,85.5,20,0.5,20.5,25,eta,phi,sampleindex,"_ = get_routine('drawTTgrid')(h, c)"
+mean_values,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_mean},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+std_values,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_std},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+mean_pedestals,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_mean},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+mean_values_max,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c); c.SetLogz();"
+std_pedestals,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_std},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+baseline_integral,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_integral},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
 #,,,,,,,,,,,,,,,,,,
 centroid_charge_5x5_sum_weighted,,main,${ecal_ieta_centroid},${ecal_iphi_centroid},0,${ecal_charge_sum_5x5}>300,0,6000,0.5,60.5,1000,0.5,10.5,1000,eta,phi,5x5 charge,"_ = get_routine('drawTTgrid')(h, c); c.SetLogz();"
 #,,,,,,,,,,,,,,,,,,
@@ -61,9 +61,11 @@ charge_vs_fraction_EM_like,,ecal,${ecal_charge_seed}/${ecal_charge_sum_5x5},${ec
 tau_EM,,ecal,"np.take_along_axis( ${ecal_tau}, ${ecal_highest_ch}[:, None].astype(np.int32), axis=1)",0,0, ${ecal_highest_charge_over_5x5}<0.85,kBlue,500,0,500,0,0,0,0,tau_seed,ns,, 
 #,,,,,,,,,,,,,,,,,,
 mcp0_eff_hodo_x,,main,(${hodo_x1_cl0_pos}+${hodo_x2_cl0_pos})/2,"(${mcp_charge}[:, 0] > 0)",0,(${hodo_x1_single_cl_flag}) & (${hodo_x2_single_cl_flag}),kBlue,60,-15,15,2,-0.5,1.5,0,hodo_x,mcp_eff,,h.ProfileX().Draw()
-mcp0_eff_hodo_y,,main,(${hodo_y1_cl0_pos}+${hodo_y2_cl0_pos})/2,"(${mcp_charge}[:, 0] > 0)",0,(${hodo_y1_single_cl_flag}) & (${hodo_y2_single_cl_flag}) ,kBlue,60,-15,15,2,-0.5,1.5,0,hodo_x,mcp_eff,,h.ProfileX().Draw()
-mcp1_eff_hodo_y,,main,(${hodo_y1_cl0_pos}+${hodo_y2_cl0_pos})/2,"(${mcp_charge}[:, 1] > 0)",0,(${hodo_y1_single_cl_flag}) & (${hodo_y2_single_cl_flag}),kBlue,60,-15,15,2,-0.5,1.5,0,hodo_x,mcp_eff,,h.ProfileX().Draw()
-mcp1_eff_hodo_x,,main,(${hodo_x1_cl0_pos}+${hodo_x2_cl0_pos})/2,"(${mcp_charge}[:, 1] > 0)",0,(${hodo_x1_single_cl_flag}) & (${hodo_x2_single_cl_flag}) ,kBlue,60,-15,15,2,-0.5,1.5,0,hodo_x,mcp_eff,,h.ProfileX().Draw()
+mcp0_eff_hodo_y,,main,${hodo_y1_cl0_pos},"(${mcp_charge}[:, 0] > 0)",0,(${hodo_y1_single_cl_flag}) ,kBlue,60,-15,15,2,-0.5,1.5,0,hodo_y,mcp_eff,,h.ProfileX().Draw()
+mcp1_eff_hodo_y,,main,${hodo_y1_cl0_pos},"(${mcp_charge}[:, 1] > 0)",0,(${hodo_y1_single_cl_flag}) ,kBlue,60,-15,15,2,-0.5,1.5,0,hodo_x,mcp_eff,,h.ProfileX().Draw()
+mcp1_eff_hodo_x,,main,(${hodo_x1_cl0_pos}+${hodo_x2_cl0_pos})/2,"(${mcp_charge}[:, 1] > 0)",0,(${hodo_x1_single_cl_flag}) & (${hodo_x2_single_cl_flag}) ,kBlue,60,-15,15,2,-0.5,1.5,0,hodo_y,mcp_eff,,h.ProfileX().Draw()
 #,,,,,,,,,,,,,,,,,,
-charge_seed_prof_vs_hodo_y,,main,(${hodo_y1_cl0_pos}+${hodo_y2_cl0_pos})/2,(${ecal_charge_seed}),0,(${hodo_y1_single_cl_flag}) * (${hodo_y2_single_cl_flag}),kBlue,60,-15,15,1000,0,10000,0,hodo_x,seed_eff,,h.ProfileX().Draw()
+charge_seed_prof_vs_hodo_y,,main,(${hodo_y1_cl0_pos}),(${ecal_charge_seed}),0,(${hodo_y1_single_cl_flag}),kBlue,60,-15,15,1000,0,10000,0,hodo_x,seed_eff,,h.ProfileX().Draw()
 charge_seed_prof_vs_hodo_x,,main,(${hodo_x1_cl0_pos}+${hodo_x2_cl0_pos})/2, (${ecal_charge_seed}),0,(${hodo_x1_single_cl_flag}) * (${hodo_x2_single_cl_flag}),kBlue,60,-15,15,1000,0,10000,0,hodo_x,seed_eff,,h.ProfileX().Draw()
+ecal_charge_sum_5x5_prof_vs_hodo_y,,main,(${hodo_y1_cl0_pos}),(${ecal_charge_sum_5x5}),0,(${hodo_y1_single_cl_flag}),kBlue,60,-15,15,1000,0,10000,0,hodo_x,seed_eff,,h.ProfileX().Draw()
+ecal_charge_sum_5x5_prof_vs_hodo_x,,main,(${hodo_x1_cl0_pos}+${hodo_x2_cl0_pos})/2, (${ecal_charge_sum_5x5}),0,(${hodo_x1_single_cl_flag}) * (${hodo_x2_single_cl_flag}),kBlue,60,-15,15,1000,0,10000,0,hodo_x,seed_eff,,h.ProfileX().Draw()

@@ -46,6 +46,7 @@
                 "apply_intercalib": "intercalib_factor",
                 "decode_and_select_gains": "decode_ecal",
                 "reco_conf": {
+		    "baseline_samples": 4,
                     "signal_samples_pre_peak": 3,
                     "signal_samples_post_peak": 7,
                     "charge_zerosup_peak_threshold": 10,
@@ -130,7 +131,7 @@
             {
                 "waves_branch": "dgtz_sample",
                 "_comment": "null ch_map means all channels active, list is active chs, string is map filename",
-                "ch_map": [0],
+                "ch_map": [3],
                 "decode": null,
                 "to_be_inverted": false,
                 "generic_reco": true,
@@ -150,7 +151,7 @@
                     "rise_interp_left_samples": 1,
                     "rise_interp_right_samples": 2,
                     "timing_methods": ["fixed_thr"],
-                    "timing_thr": 1100,
+                    "timing_thr": 3000,
                     "timing_thr_tol": 200,
                     "interpolation_factor": 40,
                     "baseline_subtract": false
