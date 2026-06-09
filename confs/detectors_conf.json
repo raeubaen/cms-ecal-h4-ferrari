@@ -46,7 +46,7 @@
                 "apply_intercalib": "intercalib_factor",
                 "decode_and_select_gains": "decode_ecal",
                 "reco_conf": {
-		    "baseline_samples": 4,
+            		    "baseline_samples": 4,
                     "signal_samples_pre_peak": 3,
                     "signal_samples_post_peak": 7,
                     "charge_zerosup_peak_threshold": 10,
