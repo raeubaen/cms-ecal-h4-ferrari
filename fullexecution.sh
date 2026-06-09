@@ -1,6 +1,11 @@
 #!/bin/bash
 
-source /afs/cern.ch/user/e/ecalgit/cms-ecal-h4-ferrari/define_envs.sh
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+echo "DEBUG: Running .sh inside $SCRIPT_DIR"
+
+cd ${SCRIPT_DIR}
+
+source define_envs.sh
 
 # --- launch settings with beam|laser as input parameter ---
 if [ "$#" -lt 3 ]; then

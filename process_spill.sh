@@ -1,4 +1,11 @@
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+echo "DEBUG: Running .sh inside $SCRIPT_DIR"
+
+cd ${SCRIPT_DIR}
+
 source define_envs.sh
+
 
 cd ${WORKING_DIR}
 
