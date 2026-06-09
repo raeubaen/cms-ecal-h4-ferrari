@@ -16,7 +16,7 @@ def drawTTgrid(hist, c):
     y_max = hist.GetYaxis().GetXmax()
 
     # vertical grid lines
-    for i in range(1, 66, 5):
+    for i in range(1, 85, 5):
       x = i - 0.5
       line = ROOT.TLine(x, y_min, x, y_max)
       line.SetLineColor(line_color)
@@ -26,7 +26,7 @@ def drawTTgrid(hist, c):
       lines.append(line)
 
     # horizontal grid lines
-    for j in range(1, 11, 5):
+    for j in range(1, 21, 5):
       y = j - 0.5
       line = ROOT.TLine(x_min, y, x_max, y)
       line.SetLineColor(line_color)
