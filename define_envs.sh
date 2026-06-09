@@ -3,7 +3,7 @@ export USE_CUDA=0
 export HOME_DIR="/afs/cern.ch/user/e/ecalgit/"
 
 export SPILL_HADD_INTERVAL=4
-export SPILL_LASER=30000000
+export SPILL_LASER=3
 
 export PLOT_MAIN_FOLDER="/eos/user/m/mcampana/www/h4dqm/ECAL_TB_2026/"
 export RECO_UNPACKED_OUTDIR="/eos/cms/store/group/dpg_ecal/comm_ecal/upgrade/testbeam/ECALTB_H4_Jun2026/"

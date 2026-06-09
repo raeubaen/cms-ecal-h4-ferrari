@@ -1,12 +1,5 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-echo "DEBUG: Running .sh inside $SCRIPT_DIR"
-
-cd ${SCRIPT_DIR}
-
-source define_envs.sh
-
 # --- launch settings with beam|laser as input parameter ---
 if [ "$#" -lt 3 ]; then
     echo "Usage: $0 <run_number> <spill_number> <beam|laser|beam+laser> [noplots] [nounpack]"
@@ -23,20 +16,28 @@ else
   doplots="1"
 fi
 
+echo '$#: ' $#
+
 dounpack=1
 if [ $# -ge 4 ]; then
+  echo '$# -ge 4 true'
   if [ $4 == "nounpack" ]; then
+   echo  '$4 == "nounpack" true'
     dounpack=0
-  fi
-elif [ $# -ge 5 ]; then
-  if [ $5 == "nounpack" ]; then
-    dounpack=0
+  elif [ $# -ge 5 ]; then
+    echo '$# -ge 5 true'
+    echo '$4 == "nounpack" false'
+    if [ $5 == "nounpack" ]; then
+      echo '$5 == "nounpack" true'
+      dounpack=0
+    fi
   fi
 fi
 
-echo $4 $5
+echo '$4 $5: ' $4 $5
 
-echo $dounpack
+echo "unpack?" $dounpack
+echo "plot?" $doplots
 
 if [ "$mode" == "laser" ]; then
     option="laser"
