@@ -5,7 +5,7 @@
             "electrons": {
                 "plot_list": "plotlists/plot_list_electrons.csv",
                 "tree_name": "h4",
-                "detector_list": ["ecal", "mcp", "hodo", "bcp", "digi_bcp_clock_reading"],
+                "detector_list": ["ecal", "mcp", "hodo", "digi_bcp_clock_reading"]],
                 "global_branches": ["time_rc"],
                 "option": null
             },
@@ -37,7 +37,7 @@
             "generic_reco": {
                 "waves_branch": "xtal_sample",
                 "_comment": "null ch_map means all channels active, list is active chs, string is map filename",
-                "ch_map": "maps/tb_map.csv",
+                "ch_map": "maps/tb_map_tt13and14.csv",
                 "chid_vars_list": ["n_bcp","tt","ch_in_tt","module"],
                 "to_be_inverted": false,
                 "remove_last_n_samples": 0,
@@ -46,10 +46,12 @@
                 "apply_intercalib": "intercalib_factor",
                 "decode_and_select_gains": "decode_ecal",
                 "reco_conf": {
-		    "baseline_samples": 4,
+                    "signal_baseline_gap": 4,
+            		    "baseline_samples": 8,
+                    "peak_pos_from_highest_ch": true,
                     "signal_samples_pre_peak": 3,
-                    "signal_samples_post_peak": 7,
-                    "charge_zerosup_peak_threshold": 10,
+                    "signal_samples_post_peak": 3,
+                    "charge_zerosup_peak_threshold": -10,
                     "seed_charge_threshold": 50,
                     "do_tau": true,
                     "tau_descent_samples": 3,
@@ -57,7 +59,7 @@
                     "coords_2d_list": ["ieta", "iphi"],
                     "do_timing": true,
                     "timing_methods": ["lsfit"],
-                    "spline_file": "templates/template.txt",
+                    "spline_file": "templates/template_30GeV_2026.txt",
                     "sampling_rate": 0.16,
                     "save_mean_rms_all_samples": true,
                     "save_only_central_region_info": false,
