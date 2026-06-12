@@ -9,14 +9,14 @@
                 "global_branches": ["time_rc"],
                 "option": null
             },
-            "pions_scinttrigger": {
+            "pions": {
                 "plot_list": "plotlists/plot_list_pions.csv",
                 "tree_name": "h4",
                 "detector_list": ["ecal", "mcp", "hodo", "digi_bcp_clock_reading"],
                 "global_branches": ["time_rc"],
                 "option": null
             },
-            "pions": {
+            "pions_autotrigger": {
                 "plot_list": "plotlists/plot_list_pions.csv",
                 "tree_name": "h4",
                 "detector_list": ["ecal"],
