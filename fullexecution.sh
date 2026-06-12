@@ -130,13 +130,17 @@ echo "doplots: " $doplots
 
 
 cd ${WORKING_DIR}
-python3 -m ferrari_core.reco -i ${UNPACKED_FILE} \
+cmd="python3 -m ferrari_core.reco -i ${UNPACKED_FILE} \
     -r "$RUN" \
     -s "$SPILL" \
     -ro ${RECO_UNPACKED_OUTDIR}/reco_dqm/run_$RUN/ \
     -j ${JSON_CONF} \
     -opt $option \
-    --do-plots $doplots $plots_options
+    --do-plots $doplots $plots_options"
+
+echo $cmd
+
+eval $cmd
 
 end_time=$(date +%s)
 total_time=$((end_time - start_time))
