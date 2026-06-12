@@ -17,7 +17,7 @@
                 "option": null
             },
             "pions_autotrigger": {
-                "plot_list": "plotlists/plot_list_pions.csv",
+                "plot_list": "plotlists/plot_list_pions_autotrigger.csv",
                 "tree_name": "h4",
                 "detector_list": ["ecal"],
                 "global_branches": ["time_rc"],
