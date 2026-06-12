@@ -1,0 +1,45 @@
+name,normalize_with_entries,folder,x,y,z,cuts,color,binsnx,binsminx,binsmaxx,binsny,binsminy,binsmaxy,contours,xlabel,ylabel,zlabel,add_commands
+peak_vs_charge_seed,,ecal,${ecal_charge_seed},${ecal_peak_seed},0,,kBlack,1000,0,10000,1000,0,10000,0,Charge[ADC],Peak[ADC],,
+#,,,,,,,,,,,,,,,,,,
+charge_sum_5x5,,main,${ecal_charge_sum_5x5},0,0,,kBlue,1000,0,10000,0,0,0,0,charge_{5x5} [ADC counts],ADC counts,, 
+#,,,,,,,,,,,,,,,,,,
+lsfitamp_sum_5x5,,ecal,"np.sum(${ecal_lsfit_amp}*(np.abs(${ecal_iphi_within_5x5})<3)*(np.abs(${ecal_ieta_within_5x5})<3), axis=1)",0,0,,kBlue,1000,0,10000,0,0,0,0,lsfitAmp_{5x5} [ADC counts],ADC counts,,
+#
+lsfitamp_sum_3x3,,ecal,"np.sum(${ecal_lsfit_amp}*(np.abs(${ecal_iphi_within_5x5})<2)*(np.abs(${ecal_ieta_within_5x5})<2), axis=1)",0,0,,kBlue,1000,0,10000,0,0,0,0,lsfitAmp_{3x3} [ADC counts],ADC counts,,
+#
+charge_sum_3x3,,ecal,"np.sum(${ecal_charge}*(np.abs(${ecal_iphi_within_5x5})<2)*(np.abs(${ecal_ieta_within_5x5})<2), axis=1)",0,0,,kBlue,1000,0,10000,0,0,0,0,charge_{3x3} [ADC counts],ADC counts,,
+#
+highest_ch_peak,,main,"np.take_along_axis( ${ecal_peak}, ${ecal_highest_ch}[:, None].astype(np.int32), axis=1)",0,0,,kBlue,1000,0,10000,0,0,0,0,highest_ch_peak,ADC counts,, 
+#,,,,,,,,,,,,,,,,,,
+mean_charge,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_charge},,0,85,0.5,85.5,20,0.5,20.5,25,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c); c.SetLogz();"
+mean_sample_max,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak_pos},,0,85,0.5,85.5,20,0.5,20.5,25,eta,phi,sampleindex,"_ = get_routine('drawTTgrid')(h, c)"
+mean_values,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_mean},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+std_values,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_samples_std},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+mean_pedestals,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_mean},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+mean_values_max,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_peak},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c); c.SetLogz();"
+std_pedestals,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_std},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+baseline_integral,1,ecal,${ecal_ieta},${ecal_iphi},${ecal_baseline_integral},,0,85,0.5,85.5,20,0.5,20.5,1000,eta,phi,ADC counts,"_ = get_routine('drawTTgrid')(h, c)"
+#,,,,,,,,,,,,,,,,,,
+centroid_charge_5x5_sum_weighted,,main,${ecal_ieta_centroid},${ecal_iphi_centroid},0,${ecal_charge_sum_5x5}>300,0,6000,0.5,60.5,1000,0.5,10.5,1000,eta,phi,5x5 charge,"_ = get_routine('drawTTgrid')(h, c); c.SetLogz();"
+#,,,,,,,,,,,,,,,,,,
+centroid,,ecal,${ecal_ieta_centroid},${ecal_iphi_centroid},0, ${ecal_charge_sum_5x5}>600,0,6000,0.5,60.5,1000,0.5,10.5,1000,eta,phi,0,"_ = get_routine('drawTTgrid')(h, c)"
+iphi_centroid,,main,${ecal_iphi_centroid},0,0,${ecal_charge_sum_5x5}>100,kBlue,1000,0.5,10.5,0,0,0,0,phi_{centroid},crystals,, 
+ieta_centroid,,main,${ecal_ieta_centroid},0,0,${ecal_charge_sum_5x5}>100,kBlue,6000,0.5,60.5,0,0,0,0,eta_{centroid},crystals,, 
+#,,,,,,,,,,,,,,,,,,
+charge_pos0_left_top,,ecal_single_charges,${ecal_charge},0,0,(${ecal_ieta_within_5x5}==-1) & (${ecal_iphi_within_5x5}==1),kBlue,1000,0,10000,0,0,0,0,charge [ADC counts],ADC counts,, 
+charge_pos1_center_top,,ecal_single_charges,${ecal_charge},0,0,(${ecal_ieta_within_5x5}==0) & (${ecal_iphi_within_5x5}==1),kBlue,1000,0,10000,0,0,0,0,charge [ADC counts],ADC counts,, 
+charge_pos2_right_top,,ecal_single_charges,${ecal_charge},0,0,(${ecal_ieta_within_5x5}==1) & (${ecal_iphi_within_5x5}==1),kBlue,1000,0,10000,0,0,0,0,charge [ADC counts],ADC counts,, 
+charge_pos3_left_center,,ecal_single_charges,${ecal_charge},0,0,(${ecal_ieta_within_5x5}==-1) & (${ecal_iphi_within_5x5}==0),kBlue,1000,0,10000,0,0,0,0,charge [ADC counts],ADC counts,, 
+charge_pos4_center,,ecal_single_charges,${ecal_charge},0,0,(${ecal_ieta_within_5x5}==0) & (${ecal_iphi_within_5x5}==0),kBlue,1000,0,10000,0,0,0,0,charge [ADC counts],ADC counts,, 
+charge_pos5_right_center,,ecal_single_charges,${ecal_charge},0,0,(${ecal_ieta_within_5x5}==1) & (${ecal_iphi_within_5x5}==0),kBlue,1000,0,10000,0,0,0,0,charge [ADC counts],ADC counts,, 
+charge_pos6_left_bottom,,ecal_single_charges,${ecal_charge},0,0,(${ecal_ieta_within_5x5}==-1) & (${ecal_iphi_within_5x5}==-1),kBlue,1000,0,10000,0,0,0,0,charge [ADC counts],ADC counts,, 
+charge_pos7_center_bottom,,ecal_single_charges,${ecal_charge},0,0,(${ecal_ieta_within_5x5}==0) & (${ecal_iphi_within_5x5}==-1),kBlue,1000,0,10000,0,0,0,0,charge [ADC counts],ADC counts,, 
+charge_pos8_right_bottom,,ecal_single_charges,${ecal_charge},0,0,(${ecal_ieta_within_5x5}==1) & (${ecal_iphi_within_5x5}==-1),kBlue,1000,0,10000,0,0,0,0,charge [ADC counts],ADC counts,, 
+#,,,,,,,,,,,,,,,,,,
+amplitude_map_5x5,1,main,${ecal_ieta_within_5x5},${ecal_iphi_within_5x5},${ecal_charge_divided_5x5},${ecal_charge_sum_5x5} > 0,0,5,-2.5,2.5,5,-2.5,2.5,1000,eta,phi,charge_{ch}/charge_{5x5},c.SetLogz();
+#,,,,,,,,,,,,,,,,,,
+charge_vs_fraction,,ecal,${ecal_charge_seed}/${ecal_charge_sum_5x5},${ecal_charge_seed},0,,0,150,0,1.5,1000,0,10000,0,highest_charge_over_5x5,[ADC counts],, 
+charge_vs_fraction_EM_like,,ecal,${ecal_charge_seed}/${ecal_charge_sum_5x5},${ecal_charge_seed},0, ${ecal_charge_seed}/${ecal_charge_sum_5x5}<0.85 ,0,150,0,1.5,1000,0,10000,0,highest_charge_over_5x5,[ADC counts],, 
+#,,,,,,,,,,,,,,,,,,
+tau_EM,,ecal,"np.take_along_axis( ${ecal_tau}, ${ecal_highest_ch}[:, None].astype(np.int32), axis=1)",0,0, ${ecal_highest_charge_over_5x5}<0.85,kBlue,500,0,500,0,0,0,0,tau_seed,ns,, 
+#,,,,,,,,,,,,,,,,,,
