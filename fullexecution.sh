@@ -106,10 +106,6 @@ PLOT_CURRENT_FOLDER=$PLOT_MAIN_FOLDER/run_$RUN/spill_$SPILL_STR/
 
 if [ "$doplots" == "1" ]; then
 
-  Run_dir="${PLOT_MAIN_FOLDER}/run_worker_${RUN}/"
-  if [ ! -d "$Run_dir" ]; then
-	    mkdir "Run_dir"
-  fi
   echo ${PLOT_MAIN_FOLDER}
   mkdir ${PLOT_MAIN_FOLDER}/run_${RUN}/
   mkdir ${PLOT_CURRENT_FOLDER}
