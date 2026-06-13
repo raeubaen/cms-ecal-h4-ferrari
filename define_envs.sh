@@ -21,4 +21,9 @@ export PHP_FILES_DIR="${HOME_DIR}/cms-ecal-h4-ferrari/ferrari_core/php/"
 export PLOTS_PLUGINS_FOLDER="${HOME_DIR}/cms-ecal-h4-ferrari/custom_plot_functions/"
 export NUMPY_UNPACKED_DIR="${HOME_DIR}/ecal-h4-utils"
 
+
+export HADD_NOW_DIRS="${PLOT_MAIN_FOLDER}/to_hadd_now.txt"
+export HADD_GLOB_BUFFER="${PLOT_MAIN_FOLDER}/to_hadd_buffer.txt"
+
+
 export UNPACKER_ROUTINE="DANTE"
